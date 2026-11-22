@@ -10,8 +10,8 @@ views:
           - type: heading
             heading: Wohnzimmer · Simulation
             icon: mdi:sofa-outline
-          - type: custom:vertical-stack-in-card
-            horizontal: true
+          - type: custom:stack-in-card
+            mode: horizontal
             cards:
               - type: custom:mushroom-entity-card
                 entity: sensor.living_room_temperature_sim
