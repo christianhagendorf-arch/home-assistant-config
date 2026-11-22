@@ -1,163 +1,100 @@
-# Wohnzimmer-Pilot auf ha-test
+# Home Assistant: Test-Deploy und Übergabe
 
-## Rollen
+Stand: 22.11.2026. Entwicklungsbasis des abgenommenen Wohnzimmer-Piloten: `feature/living-room-pilot`, Commit `1bdfb87` (Patch 0003). Dieses Runbook gilt ausschließlich für `ha-test`. Adressen, Arbeitsplatzpfade und der konkrete Backup-Nachweis gehören in das separat und autorisiert weitergegebene Übergabedokument.
 
-- **GAIA/Laptop:** Entwurf und Diffs, GitHub-Review. GitHub-Anmeldung im Browser verleiht GAIA keinen Zugriff. Bei vorhandenem autorisiertem Repository-Connector: Änderungen nur in den Arbeitsbranch, kein direkter Commit nach `main`. Andernfalls einen Git-Patch über einen zulässigen Dateiweg übertragen.
-- **Mini-PC:** Arbeitskopie von `home-assistant-config`, GitHub Desktop und VS Code. Beim Öffnen des Ordners die empfohlenen Erweiterungen YAML und Home Assistant Config Helper installieren. Für den Start genügen die lokalen Prüfungen der Editoren; der tatsächliche HA-Check erfolgt auf dem Pi. Keine zusätzliche lokale HA-Instanz erforderlich.
-- **ha-test:** Einziges Deployment-Ziel. Zugriffe über den bestehenden SSH-Weg bzw. einen separaten, ausdrücklich autorisierten Schlüssel für den Mini-PC. Keine GitHub-Anmeldedaten auf dem Pi.
+## Arbeitsumgebung und Zuständigkeiten
 
-## Pilot-Patch einspielen
+- **A: Test-Pi (`ha-test`).** Raspberry Pi mit Debian 13 und Home Assistant Container, betrieben über Docker Compose. Portainer steht zur Einsicht bereit. Der Pi benötigt weder einen Git-Checkout noch GitHub-Zugangsdaten. Dashboard-Pilot: „Wohnzimmer (Sim)“, `/living-room-pilot/ground_floor`.
+- **B: Laptop.** Chat/Entwurf, Downloads und GitHub-Review im Browser, bei Bedarf SSH zur Diagnose. Der Chat ist weder auf dem Pi angemeldet noch mit dem lokalen Checkout verbunden. Der GAIA-GitHub-Connector wird nicht genutzt.
+- **C: Windows-Mini-PC.** Lokaler Git-Checkout, GitHub Desktop, VS Code, PowerShell/OpenSSH. Code und Dokumentation hier bearbeiten und committen, vom Arbeitsbranch pushen und per SSH/SCP bereitstellen. YAML- und Home Assistant Config Helper sind im Repo empfohlen. Für die Entwicklung ist keine zusätzliche lokale HA-Instanz nötig.
 
-1. Am Mini-PC in GitHub Desktop `home-assistant-config` klonen oder **Fetch origin**. Arbeitskopie muss sauber sein. `feature/living-room-pilot` wählen, sofern dort noch kein neuer Pilotcommit liegt. Einen Commit nie zweimal importieren.
-2. Den neuen Patch über den erlaubten Dateiweg auf den Mini-PC laden. Der frühere `0001-wohnzimmer-pilot-scaffolding.patch` ist ein separater Entwurf und wird hier nicht eingespielt.
-3. In Git Bash (Git for Windows) im Repo:
+Bei Chat-Patches führt der Weg B → freigegebener kDrive-Transfer → C → SSH-Staging auf A. Der Transferordner enthält Patch und Anleitung, keinen Git-Checkout. Bei direkter Entwicklung auf C kann nach Commit und Review sofort aus Git bereitgestellt werden. Weder direkte Live-Dateiänderungen per Remote-Editor/SFTP noch ein ungeprüfter `git pull` auf dem Pi sind Teil des Workflows.
 
-   ```bash
-   git status --short
-   git apply --stat /pfad/zum/wohnzimmer-pilot-v1.patch
-   git apply --check /pfad/zum/wohnzimmer-pilot-v1.patch
-   git am /pfad/zum/wohnzimmer-pilot-v1.patch
-   git show --stat --oneline HEAD
-   ```
+## Einstieg und Vorbereitung
 
-   Bei einem Fehler abbrechen, ggf. `git am --abort`. In GitHub Desktop den Commit prüfen und mit **Push origin** den Arbeitsbranch synchronisieren, sofern Änderungen noch nicht auf GitHub sind.
+1. Repo-Zugriff über den Eigentümer einrichten. Repo soll privat sein; Sichtbarkeit im GitHub-Kopf prüfen. Keine Schlüssel, Tokens, `secrets.yaml`, `.storage`, Datenbanken oder Backups einchecken. Private Schlüssel bleiben auf den jeweiligen Geräten. Für die übernehmende Person einen eigenen öffentlichen Schlüssel autorisieren; SSH-Hostfingerabdruck über einen bereits vertrauenswürdigen Kanal prüfen.
+2. Arbeitsbranch in GitHub Desktop wählen und `Fetch origin` ausführen. In VS Code `git status --short --branch` und `git log -3 --oneline` prüfen. Offene Änderungen an versionierten Dateien vor einem Patch separat sichern oder committen. Einen Patch nie zweimal anwenden. Kein direktes Arbeiten auf `main`.
+3. Auf A ist der Compose-Projektordner `/opt/ha-test/homeassistant`; Host-Config `config/` wird als `/config` eingebunden. Gewöhnlicher Zugriff ist über den lokal eingerichteten SSH-Alias `ha-test`; `ssh ha-test hostname` muss `ha-test` zurückgeben. Host-Netzwerk, Registry und Produktionsverbindungen bleiben unverändert.
+4. Auf A in **Einstellungen → Marketplace** vorhandene Frontend-Ressourcen prüfen: Mushroom (`piitaya/lovelace-mushroom`), Card Mod (`thomasloven/lovelace-card-mod`), Vertical Stack In Card (`ofekashery/vertical-stack-in-card`). Für 0003 ist weder `custom-cards/stack-in-card` noch der gleichnamige Fork erforderlich. Versionen bei der Übergabe erfassen; bei Kartenfehlern Registrierung und Browser-Reload prüfen.
+
+## Git-Patch einspielen
+
+Vierstellige passende Präfixe: `NNNN-<thema>.patch` plus `NNNN-HA_TEST_DEPLOY-snippet.md`. Das Snippet ist schon vor dem Import verfügbar und enthält die konkreten Kopiervorlagen. Dieses Runbook bleibt unnummeriert und führt die Historie kumulativ. Downloadkopien der Repo-Markdown-Dateien nie vor `git am` über die versionierten Dateien kopieren.
+
+Auf C in PowerShell den Patchpfad aus dem Transferordner angeben. Erst bei erfolgreichem Check anwenden; `git am` erzeugt den Commit selbst.
+
+```powershell
+$patch = (Read-Host 'Vollständiger Pfad zur Patch-Datei').Trim('"')
+if (-not (Test-Path -LiteralPath $patch -PathType Leaf)) { throw 'Patch fehlt.' }
+git status --short --branch
+git apply --check -- $patch
+if ($LASTEXITCODE -ne 0) { throw 'Patch-Prüfung fehlgeschlagen; nichts importiert.' }
+git am -- $patch
+if ($LASTEXITCODE -ne 0) { throw 'Import fehlgeschlagen; Git-Status prüfen.' }
+git log -3 --oneline
+```
+
+Bei einem bereits gescheiterten, noch laufenden Import zeigt `git status` den `am`-Vorgang an. Eigene Änderungen sichern und erst dann ggf. `git am --abort` verwenden. Bei `does not match index` zuerst `git diff` und `git diff --cached` ansehen. Bei 0002 waren lokale Änderungen in zwei Markdown-Dateien sichtbar; Wiederherstellung der Repo-Dateien und lokales `core.autocrlf=false` ermöglichten den Import. Die genaue Ursache der Abweichung wurde nicht isoliert. Kein globales `core.autocrlf` und kein `git reset --hard` als Standardfix. In GitHub Desktop ausschließlich den Arbeitsbranch pushen.
 
 ## Übertragen und Teststart
 
-Der folgende Block ist für Windows PowerShell im Repo auf dem Mini-PC. `git`, `ssh` und `scp` müssen dort verfügbar sein. Falls der Pi vom Mini-PC noch nicht per SSH erreicht wird, kann der Nutzer denselben Test vom Laptop mit bestehendem SSH-Zugang ausführen. Kein privater Schlüssel wird zwischen Geräten kopiert. Bei Erstverbindung den SSH-Hostschlüssel gegen den bereits vertrauenswürdigen Zugang prüfen; auf Zertifikats- oder Hostkey-Fehler nicht mit abgeschalteter Prüfung reagieren.
+Diesen Block auf C in PowerShell im lokalen Repo ausführen. Er nimmt den Git-Commit `HEAD`, keine ungespeicherten oder nur lokal editierten Dateien. Möglichst erst nach Push des geprüften Commits ausführen; der Push selbst deployt nichts. Das Archiv enthält genau das Dashboard, das Simulationspaket und das Deploy-Skript. Eine neue Sitzung benötigt neue Staging-Variablen; die Vorschau kann dafür erneut ausgeführt werden.
 
 ```powershell
-$target = 'haadmin@ha-test.local'
-# Falls der lokale Name nicht auflösbar ist, den bekannten Testhost per LAN-IP verwenden.
-ssh $target hostname
-```
-
-Nur mit Ausgabe `ha-test` fortfahren. Nutzt dein SSH-Zugang eine explizite `IdentityFile`, trage sie in der lokalen SSH-Konfiguration für diesen Host ein, damit `ssh` und `scp` denselben Schlüssel wählen.
-
-```powershell
-$sha = (git rev-parse --short=12 HEAD).Trim()
+$target = 'ha-test'
+$hostName = ssh $target hostname
+if ($LASTEXITCODE -ne 0 -or ([string]$hostName).Trim() -cne 'ha-test') {
+    throw 'Zielhost ist nicht ha-test.'
+}
+$sha = git rev-parse --short=12 HEAD
+if ($LASTEXITCODE -ne 0) { throw 'Kein Git-Commit ermittelt.' }
 $archive = Join-Path $env:TEMP "ha-pilot-$sha.tar"
-git archive --format=tar --output="$archive" HEAD config/dashboards/living-room-pilot.yaml config/packages/ground_floor/pilot_living_room.yaml tools/deploy_ha_test.py
+git archive --format=tar --output="$archive" HEAD `
+  config/dashboards/living-room-pilot.yaml `
+  config/packages/ground_floor/pilot_living_room.yaml `
+  tools/deploy_ha_test.py
 if ($LASTEXITCODE -ne 0) { throw 'Git-Archiv konnte nicht erstellt werden.' }
-$stage = (ssh $target 'mktemp -d ~/ha-pilot.XXXXXXXX').Trim()
-if ($LASTEXITCODE -ne 0 -or $stage -notmatch '^/[a-zA-Z0-9_./-]+/ha-pilot\.[a-zA-Z0-9]+$') { throw 'Staging-Verzeichnis ungültig.' }
+$stage = ssh $target 'mktemp -d ~/ha-pilot.XXXXXXXX'
+if ($LASTEXITCODE -ne 0 -or $stage -notmatch '^/[a-zA-Z0-9_./-]+/ha-pilot\.[a-zA-Z0-9]+$') {
+    throw 'Staging-Verzeichnis ungültig.'
+}
 scp $archive "${target}:${stage}/pilot.tar"
 if ($LASTEXITCODE -ne 0) { throw 'Übertragung fehlgeschlagen.' }
 ssh $target "cd '$stage' && tar -xf pilot.tar && python3 tools/deploy_ha_test.py"
+if ($LASTEXITCODE -ne 0) { throw 'Dry-Run fehlgeschlagen.' }
 ```
 
-Standard ist die Vorschau; sie ändert keine HA-Dateien und startet HA nicht neu. Prüfe die angezeigten Pfade und den Konfigurationsdiff. Für den ersten Apply läuft der erfolgreiche Vorschauaufruf direkt noch einmal mit `--apply`:
+Der Dry-Run prüft Hostname und `/config`-Mount und vergleicht die Dateien. Bei reinem Dashboard-Wechsel ist `Geplante Dateiänderungen: dashboards/living-room-pilot.yaml` die vollständige erwartete Ausgabe. Ein Inhaltsdiff wird nur für Änderungen an `configuration.yaml` angezeigt. Der Dry-Run ändert keine HA-Konfiguration und führt kein `check_config` aus. Staging und der Skript-Lock können dabei auf dem Pi angelegt werden.
+
+Erst bei erwarteten Zieldateien und nach Review im selben Terminal aus demselben Staging anwenden:
 
 ```powershell
 ssh $target "cd '$stage' && python3 tools/deploy_ha_test.py --apply"
 ```
 
-Der Deploy prüft Hostname und Docker-Mount, sichert nur die betroffenen Dateien außerhalb des HA-Verzeichnisses und führt `check_config` aus. Ein bereits vorhandener, nicht hier verwalteter Lovelace-Block führt zu einem Stopp, damit die Dashboard-Registrierung gezielt ergänzt werden kann. Bei einem Rechtefehler und sofern du den übertragenen Stand geprüft hast, führe über PowerShell `ssh -t $target "cd '$stage' && sudo -H python3 tools/deploy_ha_test.py --apply"` aus. Für Rollback dieselbe Rechteebene verwenden. Keine rekursiven Rechteänderungen. Wenn die YAML-Prüfung scheitert, werden die gesicherten Dateien vor einem Neustart zurückgeholt. Bei reinem Lovelace-Dateiwechsel aktualisiere das Pilot-Dashboard über `⋮` → **Aktualisieren**. Dateien aus der Git-Arbeitskopie außerhalb der oben genannten Liste werden nie kopiert.
+Das Skript legt eine lokale Sicherung der drei verwalteten Pfade an und führt nach dem Schreiben `check_config` aus. Bei einem Validierungsfehler versucht es die vorherigen Dateien wiederherzustellen und startet für diesen Fehlerpfad den Container nicht neu. Bei ausschließlicher Dashboard-YAML-Änderung folgt kein Restart; in **Wohnzimmer (Sim) → ⋮ → Aktualisieren** lädt man die YAML neu. Änderungen am Paket oder an der Registrierung führen nach erfolgreichem Check zu einem HA-Container-Neustart mit HTTP-200-Prüfung. Ein unvertrauter `lovelace:`-Block, Host-/Mount-Abweichung oder Berechtigungsfehler sind Gründe zum Stoppen und Prüfen. Keine Rechte pauschal lockern und keine Registrierungsblöcke blind ersetzen.
 
-## Abnahme auf dem Pi
+Die Payload-Liste in `tools/deploy_ha_test.py` ist fest auf den Wohnzimmer-Pilot beschränkt. Neue Paket-/Dashboard-Dateien erst nach expliziter Erweiterung und Review von Skript, Archivliste, Backup und Abnahme deployen. Das nachträgliche Ablegen im Repo allein überträgt sie nicht.
 
-- Pilot in der Sidebar öffnen: **Wohnzimmer (Sim)**, Pfad `/living-room-pilot/ground_floor`. Bestehende Übersicht bleibt erreichbar. Startlogs seit dem im Deploy ausgegebenen UTC-Zeitpunkt prüfen.
-- Heizsymbol: aus → heizen → aus. Ist links, Soll rechts; −/+ je 0,5 °C im Bereich 16–24 °C, ohne Popup. Anzeige des Heizstatus ist simuliert und unterscheidet aus, heizt und wartet. Diese Sollwerte sind Startwerte des Piloten; die Simulation ist kein Test der Sollwert-Wiederherstellung über Neustarts.
-- Demolicht: Aus = kein Slider; An = Slider; erneut Aus = kein Leerraum. Helligkeit ändern und nach Aus/An erneut prüfen. Bogenlampe schaltet immer ohne Slider. TV-Board nur manuell ein/aus.
-- Auf Desktop und iPhone testen, gerade nebeneinanderliegende Bedienelemente und schmale Displaybreiten. Unbekannte oder fehlende Entitäten beheben; HA-Prüfung und HTTP 200 allein prüfen die Lovelace-Bedienung nicht.
-- Neue Sim-Entitäten nach dem Smoke-Test in der HA-Oberfläche mit dem vorhandenen Label `sim-test` markieren; das Deployment bearbeitet `.storage` nicht.
+## Abnahme, Diagnose und Rückfall
 
-Bei UI-Problemen oder unbeabsichtigten Änderungen: das vom Apply ausgegebene letzte Backup verwenden. Keine sonstigen Konfigurationsänderungen zwischen Deploy und Rollback vornehmen.
+- Nach jedem Apply die Ausgabe samt Commit, Backup-Pfad, Check und Reload/Restart protokollieren. `check_config`/HTTP 200 bestätigen die YAML/Erreichbarkeit, kein erfolgreiches Browser-Rendering der Karten.
+- Desktop und iPhone getrennt prüfen: Heizzeile ohne Zwischenrahmen, Heizsymbol Heizen/Aus, −/+ in 0,5-°C-Schritten; Dimmer nur bei Licht An, Bogenlampe und TV-Board manuell. Keine abgeschnittenen Bedienelemente oder Kartenfehler. Bei `Custom element doesn't exist` zuerst Frontend-Ressource und Tab-Reload prüfen. Keine Produktiv-Entity zum Test verknüpfen.
+- Bei UI-Fehlern vorherigen Stand via zuletzt ausgegebenem Backup wiederherstellen. Das Skript akzeptiert nur den jüngsten Snapshot; es stellt alle drei verwalteten Pfade auf diesen Snapshot zurück und startet auch nach einer reinen UI-Änderung HA neu. Bei zwischenzeitlichen Änderungen erst vergleichen und mit dem Eigentümer abstimmen. Backups bleiben lokal.
 
 ```powershell
+$backup = (Read-Host 'Absoluter Pfad des letzten Backups auf ha-test').Trim()
+if ($backup -notmatch '^/[a-zA-Z0-9_./-]+/\.ha-pilot-backups/deploy-[a-zA-Z0-9_-]+$') {
+    throw 'Backup-Pfad passt nicht zum erwarteten Schema.'
+}
 ssh $target "cd '$stage' && python3 tools/deploy_ha_test.py --rollback '$backup'"
 ```
 
-`$backup` vorab auf den ausgegebenen absoluten Pfad setzen. Lokale Backups enthalten gegebenenfalls private Konfigurationswerte und bleiben auf `ha-test`.
-
 ## Patch-Verlauf
 
-Patch-Dateien werden mit vierstelliger laufender Nummer benannt (`0001-...patch`, `0002-...patch`, ...) für korrekte alphabetische Sortierung im Download-Ordner. Die zugehörigen Befehle stehen hier, nicht in separaten Dateien.
-
-### 0001 – Simulierter Wohnzimmer-Pilot (Basis)
-
-Angewendet am 22.11.2026. Legt `config/packages/ground_floor/pilot_living_room.yaml`, `config/dashboards/living-room-pilot.yaml` (native HA-Tiles), `tools/deploy_ha_test.py`, VS-Code-Empfehlungen und diese Dokumentation an. Befehle siehe Abschnitt "Übertragen und Teststart" oben.
-
-### 0002 – Umstellung auf Mushroom-Cards
-
-Ersetzt die native Tile-Optik durch `mushroom-entity-card`, `mushroom-light-card`, `mushroom-climate-card`. Die Dimmer-Sichtbarkeitsregel läuft jetzt über `collapsible_controls: true` statt über `conditional`-Karten.
-
-Voraussetzung: Mushroom ist auf `ha-test` installiert (**Einstellungen → Marketplace** → "Mushroom" suchen → Installieren → Browser-Tab neu laden; HA ab 2026.11 hat HACS/Marketplace fest integriert, kein Terminal-Schritt nötig).
-
-Mini-PC, VS-Code-Terminal, im Repo-Ordner, nachdem `0002-wohnzimmer-pilot-mushroom-v1.patch` dorthin kopiert wurde:
-
-```powershell
-git status --short
-git apply --stat 0002-wohnzimmer-pilot-mushroom-v1.patch
-git apply --check 0002-wohnzimmer-pilot-mushroom-v1.patch
-git am 0002-wohnzimmer-pilot-mushroom-v1.patch
-git log --oneline -3
-git status --short
-```
-
-Push über GitHub Desktop. Danach Deploy auf `ha-test`, identischer Ablauf wie bei Patch 0001 (Dry-Run zuerst, Ausgabe prüfen lassen, dann `--apply`):
-
-```powershell
-$target = 'ha-test'
-ssh $target hostname
-$sha = (git rev-parse --short=12 HEAD).Trim()
-$archive = Join-Path $env:TEMP "ha-pilot-$sha.tar"
-git archive --format=tar --output="$archive" HEAD config/dashboards/living-room-pilot.yaml config/packages/ground_floor/pilot_living_room.yaml tools/deploy_ha_test.py
-if ($LASTEXITCODE -ne 0) { throw 'Git-Archiv konnte nicht erstellt werden.' }
-$stage = (ssh $target 'mktemp -d ~/ha-pilot.XXXXXXXX').Trim()
-if ($LASTEXITCODE -ne 0 -or $stage -notmatch '^/[a-zA-Z0-9_./-]+/ha-pilot\.[a-zA-Z0-9]+$') { throw 'Staging-Verzeichnis ungültig.' }
-scp $archive "${target}:${stage}/pilot.tar"
-if ($LASTEXITCODE -ne 0) { throw 'Übertragung fehlgeschlagen.' }
-ssh $target "cd '$stage' && tar -xf pilot.tar && python3 tools/deploy_ha_test.py"
-```
-
-Nur Dry-Run, keine Änderung. Ausgabe an den Assistenten schicken, erst nach Freigabe:
-
-```powershell
-ssh $target "cd '$stage' && python3 tools/deploy_ha_test.py --apply"
-```
-
-Abnahme: Sidebar "Wohnzimmer (Sim)" neu laden. Demolicht und Heizung bei Aus eingeklappt, bei An mit Reglern. Optik jetzt runde Mushroom-Cards statt eckiger Tiles.
-
-### 0003 – Heizungszeile wie im Produktivsystem (Ist + Heizung nebeneinander)
-
-Übernimmt das Live-Layout von `ha-test`-Pilotvorbild aus der echten Pi-Instanz: `custom:vertical-stack-in-card` mit `horizontal: true` fasst Ist-Temperatur und Heizung in einer durchgehenden Zeile zusammen, `card_mod` entfernt die Einzelrahmen. `mushroom-climate-card` nutzt `layout: horizontal`, `primary_info: none`, `secondary_info: none` (nur Icon + −/Temp/+-Stepper), Tippen auf die Karte schaltet weiterhin Heizen/Aus um.
-
-Bewusst `vertical-stack-in-card` (Repository `ofekashery/vertical-stack-in-card`) statt `custom-cards/stack-in-card`: Beide bieten dieselbe horizontale Stack-Funktion, aber `ofekashery/vertical-stack-in-card` ist im HACS/Marketplace-Default aktiv gepflegt (Release Oktober 2026 bestätigt), während `custom-cards/stack-in-card` seit längerem kein neues Release zeigt. Die Option heißt dort `horizontal: true` statt `mode: horizontal`.
-
-Voraussetzung: `card-mod` (bereits auf `ha-test` installiert) und `vertical-stack-in-card` über den Marketplace installieren (**Einstellungen → Marketplace** → "Vertical Stack In Card" suchen → Installieren → Browser-Tab neu laden; gleicher Weg wie Mushroom in Patch 0002).
-
-Mini-PC, VS-Code-Terminal, im Repo-Ordner, nachdem `0003-wohnzimmer-pilot-heizung-inline-v1.patch` dorthin kopiert wurde:
-
-```powershell
-git status --short
-git apply --stat 0003-wohnzimmer-pilot-heizung-inline-v1.patch
-git apply --check 0003-wohnzimmer-pilot-heizung-inline-v1.patch
-git am 0003-wohnzimmer-pilot-heizung-inline-v1.patch
-git log --oneline -3
-git status --short
-```
-
-Push über GitHub Desktop. Danach Deploy auf `ha-test`, identischer Ablauf wie bei Patch 0001/0002 (Dry-Run zuerst, Ausgabe prüfen lassen, dann `--apply`):
-
-```powershell
-$target = 'ha-test'
-ssh $target hostname
-$sha = (git rev-parse --short=12 HEAD).Trim()
-$archive = Join-Path $env:TEMP "ha-pilot-$sha.tar"
-git archive --format=tar --output="$archive" HEAD config/dashboards/living-room-pilot.yaml config/packages/ground_floor/pilot_living_room.yaml tools/deploy_ha_test.py
-if ($LASTEXITCODE -ne 0) { throw 'Git-Archiv konnte nicht erstellt werden.' }
-$stage = (ssh $target 'mktemp -d ~/ha-pilot.XXXXXXXX').Trim()
-if ($LASTEXITCODE -ne 0 -or $stage -notmatch '^/[a-zA-Z0-9_./-]+/ha-pilot\.[a-zA-Z0-9]+$') { throw 'Staging-Verzeichnis ungültig.' }
-scp $archive "${target}:${stage}/pilot.tar"
-if ($LASTEXITCODE -ne 0) { throw 'Übertragung fehlgeschlagen.' }
-ssh $target "cd '$stage' && tar -xf pilot.tar && python3 tools/deploy_ha_test.py"
-```
-
-Nur Dry-Run, keine Änderung. Ausgabe an den Assistenten schicken, erst nach Freigabe:
-
-```powershell
-ssh $target "cd '$stage' && python3 tools/deploy_ha_test.py --apply"
-```
-
-Abnahme: Sidebar "Wohnzimmer (Sim)" neu laden. Ist-Temperatur und Heizung stehen jetzt in einer durchgehenden Zeile, optisch wie im Produktivsystem (Küche/Wohnzimmer). Heizsymbol-Tap schaltet weiterhin Heizen/Aus, −/+ ändert den Sollwert in 0,5-°C-Schritten.
+| Nr. | Basis / Stand | Umfang und Nachweis |
+| --- | --- | --- |
+| 0001 | `d000092` | Simulationspaket, native Tiles und Deploy-Skript. Registrierung angelegt; Check, Neustart und HTTP 200 protokolliert. |
+| 0002 | `e5c5928` | Mushroom-Karten. Nur Dashboard-YAML; Check und Reload ohne Container-Neustart. Bedienprobe ohne Beanstandung, Heizzeile visuell noch nicht wie Mockup. |
+| 0003 | `1bdfb87` | Heizzeile horizontal mit Vertical Stack In Card und Card Mod. Nur Dashboard-YAML; Check erfolgreich, kein Neustart. Alle vier Prüfpunkte laut Bedienprobe bestanden, siehe `DASHBOARD_DECISIONS.md`. |
+| 0004 | beruht auf `1bdfb87` | Nur Dokumentation zur Übergabe. Patch importieren und Arbeitsbranch pushen; kein SCP, kein Apply, kein HA-Neustart. |
