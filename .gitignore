@@ -32,7 +32,9 @@ __pycache__/
 *.py[cod]
 
 # Editor/OS
-.vscode/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
 .idea/
 .DS_Store
 Thumbs.db

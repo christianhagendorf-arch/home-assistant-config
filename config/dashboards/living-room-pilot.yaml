@@ -1,0 +1,68 @@
+views:
+  - title: Erdgeschoss
+    path: ground_floor
+    icon: mdi:home-floor-0
+    type: sections
+    max_columns: 2
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Wohnzimmer · Simulation
+            icon: mdi:sofa-outline
+          - type: horizontal-stack
+            cards:
+              - type: tile
+                entity: sensor.living_room_temperature_sim
+                name: Ist
+                color: blue
+                tap_action:
+                  action: none
+              - type: tile
+                entity: climate.living_room_sim
+                name: Heizung · Soll
+                icon: mdi:radiator
+                state_content: hvac_action
+                tap_action:
+                  action: none
+                icon_tap_action:
+                  action: perform-action
+                  perform_action: script.living_room_heat_toggle_sim
+                features:
+                  - type: target-temperature
+                    style: buttons
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: light.living_room_demo_light_sim
+                state: "on"
+            card:
+              type: tile
+              entity: light.living_room_demo_light_sim
+              name: Dimmer (Sim)
+              tap_action:
+                action: toggle
+              features:
+                - type: light-brightness
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: light.living_room_demo_light_sim
+                state_not: "on"
+            card:
+              type: tile
+              entity: light.living_room_demo_light_sim
+              name: Dimmer (Sim)
+              tap_action:
+                action: toggle
+          - type: tile
+            entity: light.living_room_arc_lamp_sim
+            name: Bogenlampe (Sim)
+            tap_action:
+              action: toggle
+          - type: tile
+            entity: input_boolean.living_room_tv_board_sim
+            name: TV-Board (Sim)
+            icon: mdi:television
+            tap_action:
+              action: toggle
