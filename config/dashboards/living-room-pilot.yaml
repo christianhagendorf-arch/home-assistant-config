@@ -8,6 +8,20 @@ views:
       - type: grid
         cards:
           - type: heading
+            heading: Hauseingang · Simulation
+            icon: mdi:door-open
+          - type: custom:mushroom-light-card
+            entity: light.entrance_outside_sim
+            name: Außenbeleuchtung
+            icon: mdi:outdoor-lamp
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+
+      - type: grid
+        cards:
+          - type: heading
             heading: Wohnzimmer · Simulation
             icon: mdi:sofa-outline
           - type: custom:stack-in-card
@@ -19,6 +33,11 @@ views:
                 layout: horizontal
                 primary_info: state
                 secondary_info: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      border-style: none;
+                    }
               - type: custom:mushroom-climate-card
                 entity: climate.living_room_sim
                 layout: horizontal
@@ -34,10 +53,15 @@ views:
                   perform_action: script.living_room_heat_toggle_sim
                 hold_action:
                   action: more-info
+                card_mod:
+                  style: |
+                    ha-card {
+                      border-style: none;
+                    }
           - type: custom:mushroom-light-card
             entity: light.living_room_demo_light_sim
-            name: Dimmer (Sim)
-            icon: mdi:lightbulb
+            name: Dimmer
+            icon: mdi:lightbulb-outline
             show_brightness_control: true
             collapsible_controls: true
             tap_action:
@@ -48,15 +72,143 @@ views:
             cards:
               - type: custom:mushroom-light-card
                 entity: light.living_room_arc_lamp_sim
-                name: Bogenlampe (Sim)
-                icon: mdi:floor-lamp
+                name: Bogenlampe
+                icon: mdi:floor-lamp-outline
                 tap_action:
                   action: toggle
                 hold_action:
                   action: more-info
               - type: custom:mushroom-entity-card
                 entity: input_boolean.living_room_tv_board_sim
-                name: TV-Board (Sim)
+                name: TV-Board
                 icon: mdi:television
                 tap_action:
                   action: toggle
+                hold_action:
+                  action: more-info
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Küche · Simulation
+            icon: mdi:countertop-outline
+          - type: custom:stack-in-card
+            mode: horizontal
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: sensor.kitchen_temperature_sim
+                icon: mdi:thermometer
+                layout: horizontal
+                primary_info: state
+                secondary_info: none
+                card_mod:
+                  style: |
+                    ha-card {
+                      border-style: none;
+                    }
+              - type: custom:mushroom-climate-card
+                entity: climate.kitchen_sim
+                layout: horizontal
+                icon: mdi:radiator
+                hvac_modes:
+                  - "off"
+                  - heat
+                show_temperature_control: true
+                primary_info: none
+                secondary_info: none
+                tap_action:
+                  action: perform-action
+                  perform_action: script.kitchen_heat_toggle_sim
+                hold_action:
+                  action: more-info
+                card_mod:
+                  style: |
+                    ha-card {
+                      border-style: none;
+                    }
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-light-card
+                entity: light.kitchen_worktop_sim
+                name: Arbeitsfläche
+                icon: mdi:countertop-outline
+                show_brightness_control: true
+                collapsible_controls: true
+                tap_action:
+                  action: toggle
+                hold_action:
+                  action: more-info
+              - type: custom:mushroom-light-card
+                entity: light.kitchen_coffee_corner_sim
+                name: Kaffee-Ecke
+                icon: mdi:coffee-outline
+                show_brightness_control: true
+                collapsible_controls: true
+                tap_action:
+                  action: toggle
+                hold_action:
+                  action: more-info
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-light-card
+                entity: light.kitchen_dining_corner_sim
+                name: Essecke
+                icon: mdi:lamp-outline
+                tap_action:
+                  action: toggle
+                hold_action:
+                  action: more-info
+              - type: custom:mushroom-light-card
+                entity: light.kitchen_window_decoration_sim
+                name: Schwibbogen
+                icon: mdi:candle
+                tap_action:
+                  action: toggle
+                hold_action:
+                  action: more-info
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Gästebad · Simulation
+            icon: mdi:toilet
+          - type: custom:mushroom-light-card
+            entity: light.guest_bathroom_ceiling_sim
+            name: Licht
+            icon: mdi:lightbulb-outline
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: input_select.washing_machine_state_sim
+                name: Waschmaschine
+                icon: mdi:washing-machine
+                primary_info: name
+                secondary_info: state
+                tap_action:
+                  action: more-info
+              - type: custom:mushroom-entity-card
+                entity: input_select.dryer_state_sim
+                name: Trockner
+                icon: mdi:tumble-dryer
+                primary_info: name
+                secondary_info: state
+                tap_action:
+                  action: more-info
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Hauswirtschaftsraum · Simulation
+            icon: mdi:washing-machine
+          - type: custom:mushroom-light-card
+            entity: light.utility_room_ceiling_sim
+            name: Licht
+            icon: mdi:lightbulb-outline
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
