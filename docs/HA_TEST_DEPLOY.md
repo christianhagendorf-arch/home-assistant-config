@@ -118,3 +118,46 @@ ssh $target "cd '$stage' && python3 tools/deploy_ha_test.py --apply"
 ```
 
 Abnahme: Sidebar "Wohnzimmer (Sim)" neu laden. Demolicht und Heizung bei Aus eingeklappt, bei An mit Reglern. Optik jetzt runde Mushroom-Cards statt eckiger Tiles.
+
+### 0003 – Heizungszeile wie im Produktivsystem (Ist + Heizung nebeneinander)
+
+Übernimmt das Live-Layout von `ha-test`-Pilotvorbild aus der echten Pi-Instanz: `custom:vertical-stack-in-card` mit `horizontal: true` fasst Ist-Temperatur und Heizung in einer durchgehenden Zeile zusammen, `card_mod` entfernt die Einzelrahmen. `mushroom-climate-card` nutzt `layout: horizontal`, `primary_info: none`, `secondary_info: none` (nur Icon + −/Temp/+-Stepper), Tippen auf die Karte schaltet weiterhin Heizen/Aus um.
+
+Bewusst `vertical-stack-in-card` (Repository `ofekashery/vertical-stack-in-card`) statt `custom-cards/stack-in-card`: Beide bieten dieselbe horizontale Stack-Funktion, aber `ofekashery/vertical-stack-in-card` ist im HACS/Marketplace-Default aktiv gepflegt (Release Oktober 2026 bestätigt), während `custom-cards/stack-in-card` seit längerem kein neues Release zeigt. Die Option heißt dort `horizontal: true` statt `mode: horizontal`.
+
+Voraussetzung: `card-mod` (bereits auf `ha-test` installiert) und `vertical-stack-in-card` über den Marketplace installieren (**Einstellungen → Marketplace** → "Vertical Stack In Card" suchen → Installieren → Browser-Tab neu laden; gleicher Weg wie Mushroom in Patch 0002).
+
+Mini-PC, VS-Code-Terminal, im Repo-Ordner, nachdem `0003-wohnzimmer-pilot-heizung-inline-v1.patch` dorthin kopiert wurde:
+
+```powershell
+git status --short
+git apply --stat 0003-wohnzimmer-pilot-heizung-inline-v1.patch
+git apply --check 0003-wohnzimmer-pilot-heizung-inline-v1.patch
+git am 0003-wohnzimmer-pilot-heizung-inline-v1.patch
+git log --oneline -3
+git status --short
+```
+
+Push über GitHub Desktop. Danach Deploy auf `ha-test`, identischer Ablauf wie bei Patch 0001/0002 (Dry-Run zuerst, Ausgabe prüfen lassen, dann `--apply`):
+
+```powershell
+$target = 'ha-test'
+ssh $target hostname
+$sha = (git rev-parse --short=12 HEAD).Trim()
+$archive = Join-Path $env:TEMP "ha-pilot-$sha.tar"
+git archive --format=tar --output="$archive" HEAD config/dashboards/living-room-pilot.yaml config/packages/ground_floor/pilot_living_room.yaml tools/deploy_ha_test.py
+if ($LASTEXITCODE -ne 0) { throw 'Git-Archiv konnte nicht erstellt werden.' }
+$stage = (ssh $target 'mktemp -d ~/ha-pilot.XXXXXXXX').Trim()
+if ($LASTEXITCODE -ne 0 -or $stage -notmatch '^/[a-zA-Z0-9_./-]+/ha-pilot\.[a-zA-Z0-9]+$') { throw 'Staging-Verzeichnis ungültig.' }
+scp $archive "${target}:${stage}/pilot.tar"
+if ($LASTEXITCODE -ne 0) { throw 'Übertragung fehlgeschlagen.' }
+ssh $target "cd '$stage' && tar -xf pilot.tar && python3 tools/deploy_ha_test.py"
+```
+
+Nur Dry-Run, keine Änderung. Ausgabe an den Assistenten schicken, erst nach Freigabe:
+
+```powershell
+ssh $target "cd '$stage' && python3 tools/deploy_ha_test.py --apply"
+```
+
+Abnahme: Sidebar "Wohnzimmer (Sim)" neu laden. Ist-Temperatur und Heizung stehen jetzt in einer durchgehenden Zeile, optisch wie im Produktivsystem (Küche/Wohnzimmer). Heizsymbol-Tap schaltet weiterhin Heizen/Aus, −/+ ändert den Sollwert in 0,5-°C-Schritten.
