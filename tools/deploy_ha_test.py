@@ -24,13 +24,13 @@ PAYLOAD = (
 )
 MAIN = Path('configuration.yaml')
 FILES = (MAIN, *PAYLOAD)
+CARD_MOD_URL = '/local/community/lovelace-card-mod/card-mod.js?v=190927524-v4.2.1'
 BLOCK = '''# BEGIN HA-TEST LIVING ROOM PILOT
 lovelace:
   dashboards:
     living-room-pilot:
       mode: yaml
-      title: Wohnzimmer (Sim)
-      icon: mdi:sofa-outline
+      title: Zuhause (Sim)
       show_in_sidebar: true
       filename: dashboards/living-room-pilot.yaml
 # END HA-TEST LIVING ROOM PILOT
@@ -69,15 +69,26 @@ def checked_path(rel):
 def new_main(old):
     if not re.search(r'(?m)^  packages:\s*!include_dir_named +packages(?:[ \t]*(?:#.*)?)$', old):
         raise RuntimeError('Erwarteter packages-Include fehlt. Keine Änderung vorgenommen.')
-    if BLOCK in old:
-        rest = old.replace(BLOCK, '', 1)
-        if not any(marker in rest for marker in MARKERS) and not re.search(
-            r'''(?m)^(?:lovelace|"lovelace"|'lovelace')\s*:''', rest
-        ):
-            return old
-    if any(marker in old for marker in MARKERS) or re.search(
-        r'''(?m)^(?:lovelace|"lovelace"|'lovelace')\s*:''', old
-    ):
+
+    frontend_anchor = 'frontend:\n  themes: !include_dir_merge_named themes'
+    frontend_with_module = (
+        frontend_anchor + '\n  extra_module_url:\n    - ' + CARD_MOD_URL
+    )
+    if CARD_MOD_URL not in old:
+        if frontend_anchor not in old:
+            raise RuntimeError('Erwarteter frontend/themes-Block fehlt. Keine Änderung vorgenommen.')
+        old = old.replace(frontend_anchor, frontend_with_module, 1)
+
+    managed_pattern = re.compile(
+        r'(?ms)^# BEGIN HA-TEST LIVING ROOM PILOT\n.*?^# END HA-TEST LIVING ROOM PILOT\n?'
+    )
+    managed = managed_pattern.findall(old)
+    if len(managed) > 1:
+        raise RuntimeError('Mehrere verwaltete Pilot-Blöcke gefunden. Keine Änderung vorgenommen.')
+    if len(managed) == 1:
+        return managed_pattern.sub(BLOCK, old, count=1)
+
+    if re.search(r'(?m)^lovelace\s*:', old):
         raise RuntimeError('Bestehender Lovelace-Block gefunden. Pilot manuell darin ergänzen; nichts überschrieben.')
     if re.search(r'(?m)^(?:---|\.\.\.)(?:\s|$)', old):
         raise RuntimeError('YAML-Dokumentmarker gefunden. Pilot manuell anmelden.')
