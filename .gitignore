@@ -1,0 +1,46 @@
+# Home Assistant secrets and internal state
+secrets.yaml
+.storage/
+.cloud/
+
+# Databases
+home-assistant_v2.db
+home-assistant_v2.db-*
+*.db-shm
+*.db-wal
+
+# Logs and runtime files
+home-assistant.log
+home-assistant.log.*
+*.log
+.HA_VERSION
+.uuid
+
+# Backups and generated content
+backups/
+backup/
+tts/
+deps/
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+
+# Python/cache
+__pycache__/
+*.py[cod]
+
+# Editor/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# HACS-managed frontend content (review before changing)
+www/community/
+
+# Local transfer or scratch files
+*.tmp
+*.bak
+*.swp
