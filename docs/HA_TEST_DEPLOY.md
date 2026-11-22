@@ -69,3 +69,52 @@ ssh $target "cd '$stage' && python3 tools/deploy_ha_test.py --rollback '$backup'
 ```
 
 `$backup` vorab auf den ausgegebenen absoluten Pfad setzen. Lokale Backups enthalten gegebenenfalls private Konfigurationswerte und bleiben auf `ha-test`.
+
+## Patch-Verlauf
+
+Patch-Dateien werden mit vierstelliger laufender Nummer benannt (`0001-...patch`, `0002-...patch`, ...) für korrekte alphabetische Sortierung im Download-Ordner. Die zugehörigen Befehle stehen hier, nicht in separaten Dateien.
+
+### 0001 – Simulierter Wohnzimmer-Pilot (Basis)
+
+Angewendet am 22.11.2026. Legt `config/packages/ground_floor/pilot_living_room.yaml`, `config/dashboards/living-room-pilot.yaml` (native HA-Tiles), `tools/deploy_ha_test.py`, VS-Code-Empfehlungen und diese Dokumentation an. Befehle siehe Abschnitt "Übertragen und Teststart" oben.
+
+### 0002 – Umstellung auf Mushroom-Cards
+
+Ersetzt die native Tile-Optik durch `mushroom-entity-card`, `mushroom-light-card`, `mushroom-climate-card`. Die Dimmer-Sichtbarkeitsregel läuft jetzt über `collapsible_controls: true` statt über `conditional`-Karten.
+
+Voraussetzung: Mushroom ist auf `ha-test` installiert (**Einstellungen → Marketplace** → "Mushroom" suchen → Installieren → Browser-Tab neu laden; HA ab 2026.11 hat HACS/Marketplace fest integriert, kein Terminal-Schritt nötig).
+
+Mini-PC, VS-Code-Terminal, im Repo-Ordner, nachdem `0002-wohnzimmer-pilot-mushroom-v1.patch` dorthin kopiert wurde:
+
+```powershell
+git status --short
+git apply --stat 0002-wohnzimmer-pilot-mushroom-v1.patch
+git apply --check 0002-wohnzimmer-pilot-mushroom-v1.patch
+git am 0002-wohnzimmer-pilot-mushroom-v1.patch
+git log --oneline -3
+git status --short
+```
+
+Push über GitHub Desktop. Danach Deploy auf `ha-test`, identischer Ablauf wie bei Patch 0001 (Dry-Run zuerst, Ausgabe prüfen lassen, dann `--apply`):
+
+```powershell
+$target = 'ha-test'
+ssh $target hostname
+$sha = (git rev-parse --short=12 HEAD).Trim()
+$archive = Join-Path $env:TEMP "ha-pilot-$sha.tar"
+git archive --format=tar --output="$archive" HEAD config/dashboards/living-room-pilot.yaml config/packages/ground_floor/pilot_living_room.yaml tools/deploy_ha_test.py
+if ($LASTEXITCODE -ne 0) { throw 'Git-Archiv konnte nicht erstellt werden.' }
+$stage = (ssh $target 'mktemp -d ~/ha-pilot.XXXXXXXX').Trim()
+if ($LASTEXITCODE -ne 0 -or $stage -notmatch '^/[a-zA-Z0-9_./-]+/ha-pilot\.[a-zA-Z0-9]+$') { throw 'Staging-Verzeichnis ungültig.' }
+scp $archive "${target}:${stage}/pilot.tar"
+if ($LASTEXITCODE -ne 0) { throw 'Übertragung fehlgeschlagen.' }
+ssh $target "cd '$stage' && tar -xf pilot.tar && python3 tools/deploy_ha_test.py"
+```
+
+Nur Dry-Run, keine Änderung. Ausgabe an den Assistenten schicken, erst nach Freigabe:
+
+```powershell
+ssh $target "cd '$stage' && python3 tools/deploy_ha_test.py --apply"
+```
+
+Abnahme: Sidebar "Wohnzimmer (Sim)" neu laden. Demolicht und Heizung bei Aus eingeklappt, bei An mit Reglern. Optik jetzt runde Mushroom-Cards statt eckiger Tiles.
