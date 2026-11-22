@@ -158,7 +158,11 @@ def deploy(apply):
         if not dst.exists() or dst.read_bytes() != content:
             writes[rel] = content
     if old != new:
-        if any(checked_path(rel).exists() for rel in PAYLOAD):
+        managed_block_exists = all(marker in old for marker in MARKERS)
+        if (
+            not managed_block_exists
+            and any(checked_path(rel).exists() for rel in PAYLOAD)
+        ):
             raise RuntimeError('Pilot-Dateiname existiert ohne verwalteten Block. Keine Datei überschrieben.')
         writes[MAIN] = new.encode('utf-8')
     print('Geplante Dateiänderungen: ' + (', '.join(map(str, writes)) or 'keine'), flush=True)
