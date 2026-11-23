@@ -360,11 +360,21 @@ script:
             {{ ((state_attr(entity_id, 'brightness') | int(128)) * 100 / 255) | round(0) | int }}
           target_pct: >-
             {{ [100, [10, current_pct + (step | int)] | max] | min }}
-      - action: light.turn_on
-        target:
-          entity_id: "{{ entity_id }}"
-        data:
-          brightness_pct: "{{ target_pct }}"
+      - choose:
+          - conditions: "{{ (step | int) < 0 and is_state(entity_id, 'off') }}"
+            sequence:
+              - stop: Licht ist bereits aus
+          - conditions: "{{ (step | int) < 0 and (current_pct | int) <= 10 }}"
+            sequence:
+              - action: light.turn_off
+                target:
+                  entity_id: "{{ entity_id }}"
+        default:
+          - action: light.turn_on
+            target:
+              entity_id: "{{ entity_id }}"
+            data:
+              brightness_pct: "{{ target_pct }}"
 
   dashboard_theme_toggle_sim:
     alias: Dashboard Theme umschalten (Sim)
