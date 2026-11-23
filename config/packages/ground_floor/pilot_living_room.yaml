@@ -20,6 +20,18 @@ input_boolean:
     name: Gästebad Licht Schalter (Sim)
   utility_room_ceiling_power_sim:
     name: Hauswirtschaftsraum Licht Schalter (Sim)
+  washing_machine_power_sim:
+    name: Waschmaschine Steckdose (Sim)
+    initial: true
+  washing_machine_notification_sim:
+    name: Waschmaschine Benachrichtigung (Sim)
+    initial: true
+  dryer_power_sim:
+    name: Trockner Steckdose (Sim)
+    initial: true
+  dryer_notification_sim:
+    name: Trockner Benachrichtigung (Sim)
+    initial: true
 
 input_number:
   living_room_temperature_input_sim:
