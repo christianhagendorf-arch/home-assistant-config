@@ -1,4 +1,84 @@
 views:
+- title: Übersicht
+  path: overview
+  type: sections
+  max_columns: 4
+  sections:
+  - type: grid
+    cards:
+    - &id001
+      type: custom:mushroom-chips-card
+      alignment: end
+      chips:
+      - type: template
+        entity: input_select.dashboard_theme_sim
+        icon: '{{ ''mdi:weather-night'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''mdi:weather-sunny''
+          }}'
+        icon_color: '{{ ''indigo'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''amber'' }}'
+        tap_action:
+          action: perform-action
+          perform_action: script.dashboard_theme_toggle_sim
+      card_mod:
+        style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; padding:
+          0 4px !important; }'
+    - type: custom:stack-in-card
+      card_mod:
+        style: 'ha-card { border: 1px solid var(--divider-color); border-top: 4px solid #3b82f6; border-radius: 14px; box-shadow:
+          none; }'
+      cards:
+      - type: custom:mushroom-template-card
+        primary: Erdgeschoss
+        secondary: 5 Räume · verfügbar
+        tap_action:
+          action: navigate
+          navigation_path: /living-room-pilot/ground_floor
+        card_mod:
+          style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+  - type: grid
+    cards:
+    - type: custom:stack-in-card
+      card_mod:
+        style: 'ha-card { border: 1px solid var(--divider-color); border-top: 4px solid #14b8a6; border-radius: 14px; box-shadow:
+          none; }'
+      cards:
+      - type: custom:mushroom-template-card
+        primary: Obergeschoss
+        secondary: Dashboard folgt
+        tap_action:
+          action: navigate
+          navigation_path: /living-room-pilot/first_floor
+        card_mod:
+          style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+  - type: grid
+    cards:
+    - type: custom:stack-in-card
+      card_mod:
+        style: 'ha-card { border: 1px solid var(--divider-color); border-top: 4px solid #8b5cf6; border-radius: 14px; box-shadow:
+          none; }'
+      cards:
+      - type: custom:mushroom-template-card
+        primary: Dachgeschoss
+        secondary: Dashboard folgt
+        tap_action:
+          action: navigate
+          navigation_path: /living-room-pilot/second_floor
+        card_mod:
+          style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+  - type: grid
+    cards:
+    - type: custom:stack-in-card
+      card_mod:
+        style: 'ha-card { border: 1px solid var(--divider-color); border-top: 4px solid #22a260; border-radius: 14px; box-shadow:
+          none; }'
+      cards:
+      - type: custom:mushroom-template-card
+        primary: Garten
+        secondary: Dashboard folgt
+        tap_action:
+          action: navigate
+          navigation_path: /living-room-pilot/garden
+        card_mod:
+          style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
 - title: Erdgeschoss
   path: ground_floor
   type: sections
@@ -6,34 +86,7 @@ views:
   sections:
   - type: grid
     cards:
-    - type: custom:stack-in-card
-      mode: horizontal
-      card_mod:
-        style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-          \  min-height: 38px;\n}"
-      cards:
-      - type: custom:mushroom-template-card
-        primary: Zuhause (Sim)
-        tap_action:
-          action: none
-        card_mod:
-          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: rgba(var(--rgb-primary-text-color),\
-            \ 0.022) !important;\n  --card-primary-font-size: 13px;\n  --card-primary-line-height: 17px;\n}\nmushroom-state-item\
-            \ {\n  min-height: 28px;\n  padding: 3px 10px 1px !important;\n}"
-      - type: custom:mushroom-chips-card
-        alignment: end
-        chips:
-        - type: template
-          entity: input_select.dashboard_theme_sim
-          icon: '{{ ''mdi:weather-night'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''mdi:weather-sunny''
-            }}'
-          icon_color: '{{ ''indigo'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''amber'' }}'
-          tap_action:
-            action: perform-action
-            perform_action: script.dashboard_theme_toggle_sim
-        card_mod:
-          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-            \  padding: 3px 4px 0 0 !important;\n}"
+    - *id001
     - type: custom:stack-in-card
       grid_options:
         columns: 12
@@ -215,35 +268,97 @@ views:
       - type: custom:stack-in-card
         mode: horizontal
         card_mod:
-          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-            }\n"
+          style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; min-height:
+            42px; }'
         cards:
-        - type: custom:mushroom-light-card
+        - type: custom:mushroom-template-card
           entity: light.kitchen_worktop_sim
-          name: Arbeitsfläche
+          primary: Arbeitsfläche
+          secondary: '{{ ''Aus'' if is_state(entity, ''off'') else ((state_attr(entity, ''brightness'') | int(0) * 100 / 255)
+            | round(0) ~ '' %'') }}'
           icon: mdi:countertop-outline
-          show_brightness_control: true
-          collapsible_controls: true
+          icon_color: '{{ ''amber'' if is_state(entity, ''on'') else ''grey'' }}'
           tap_action:
             action: toggle
           hold_action:
             action: more-info
           card_mod:
-            style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-              }\n"
-        - type: custom:mushroom-light-card
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; min-width:
+              0; }'
+        - type: custom:mushroom-chips-card
+          alignment: end
+          chips:
+          - type: template
+            icon: mdi:minus
+            tap_action:
+              action: perform-action
+              perform_action: script.light_brightness_step_sim
+              data:
+                entity_id: light.kitchen_worktop_sim
+                step: -10
+          - type: template
+            content: '{{ ((state_attr(entity, ''brightness'') | int(0) * 100 / 255) | round(0) ~ '' %'') if is_state(entity,
+              ''on'') else ''Aus'' }}'
+            tap_action:
+              action: none
+          - type: template
+            icon: mdi:plus
+            tap_action:
+              action: perform-action
+              perform_action: script.light_brightness_step_sim
+              data:
+                entity_id: light.kitchen_worktop_sim
+                step: 10
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; padding:
+              5px 8px 0 0 !important; --mush-chip-border-radius: 9px; }'
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod:
+          style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; min-height:
+            42px; }'
+        cards:
+        - type: custom:mushroom-template-card
           entity: light.kitchen_coffee_corner_sim
-          name: Kaffee-Ecke
+          primary: Kaffee-Ecke
+          secondary: '{{ ''Aus'' if is_state(entity, ''off'') else ((state_attr(entity, ''brightness'') | int(0) * 100 / 255)
+            | round(0) ~ '' %'') }}'
           icon: mdi:coffee-outline
-          show_brightness_control: true
-          collapsible_controls: true
+          icon_color: '{{ ''amber'' if is_state(entity, ''on'') else ''grey'' }}'
           tap_action:
             action: toggle
           hold_action:
             action: more-info
           card_mod:
-            style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-              }\n"
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; min-width:
+              0; }'
+        - type: custom:mushroom-chips-card
+          alignment: end
+          chips:
+          - type: template
+            icon: mdi:minus
+            tap_action:
+              action: perform-action
+              perform_action: script.light_brightness_step_sim
+              data:
+                entity_id: light.kitchen_coffee_corner_sim
+                step: -10
+          - type: template
+            content: '{{ ((state_attr(entity, ''brightness'') | int(0) * 100 / 255) | round(0) ~ '' %'') if is_state(entity,
+              ''on'') else ''Aus'' }}'
+            tap_action:
+              action: none
+          - type: template
+            icon: mdi:plus
+            tap_action:
+              action: perform-action
+              perform_action: script.light_brightness_step_sim
+              data:
+                entity_id: light.kitchen_coffee_corner_sim
+                step: 10
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; padding:
+              5px 8px 0 0 !important; --mush-chip-border-radius: 9px; }'
       - type: custom:stack-in-card
         mode: horizontal
         card_mod:
@@ -321,19 +436,53 @@ views:
           style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: rgba(var(--rgb-primary-text-color),\
             \ 0.022) !important;\n  --card-primary-font-size: 13px;\n  --card-primary-line-height: 17px;\n}\nmushroom-state-item\
             \ {\n  min-height: 28px;\n  padding: 3px 10px 1px !important;\n}"
-      - type: custom:mushroom-light-card
-        entity: light.living_room_demo_light_sim
-        name: Dimmer
-        icon: mdi:lightbulb-outline
-        show_brightness_control: true
-        collapsible_controls: true
-        tap_action:
-          action: toggle
-        hold_action:
-          action: more-info
+      - type: custom:stack-in-card
+        mode: horizontal
         card_mod:
-          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-            }\n"
+          style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; min-height:
+            42px; }'
+        cards:
+        - type: custom:mushroom-template-card
+          entity: light.living_room_demo_light_sim
+          primary: Dimmer
+          secondary: '{{ ''Aus'' if is_state(entity, ''off'') else ((state_attr(entity, ''brightness'') | int(0) * 100 / 255)
+            | round(0) ~ '' %'') }}'
+          icon: mdi:lightbulb-outline
+          icon_color: '{{ ''amber'' if is_state(entity, ''on'') else ''grey'' }}'
+          tap_action:
+            action: toggle
+          hold_action:
+            action: more-info
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; min-width:
+              0; }'
+        - type: custom:mushroom-chips-card
+          alignment: end
+          chips:
+          - type: template
+            icon: mdi:minus
+            tap_action:
+              action: perform-action
+              perform_action: script.light_brightness_step_sim
+              data:
+                entity_id: light.living_room_demo_light_sim
+                step: -10
+          - type: template
+            content: '{{ ((state_attr(entity, ''brightness'') | int(0) * 100 / 255) | round(0) ~ '' %'') if is_state(entity,
+              ''on'') else ''Aus'' }}'
+            tap_action:
+              action: none
+          - type: template
+            icon: mdi:plus
+            tap_action:
+              action: perform-action
+              perform_action: script.light_brightness_step_sim
+              data:
+                entity_id: light.living_room_demo_light_sim
+                step: 10
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; padding:
+              5px 8px 0 0 !important; --mush-chip-border-radius: 9px; }'
       - type: custom:stack-in-card
         mode: horizontal
         card_mod:
@@ -395,3 +544,66 @@ views:
           card_mod:
             style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
               }\n"
+- title: Obergeschoss
+  path: first_floor
+  type: sections
+  max_columns: 1
+  sections:
+  - type: grid
+    cards:
+    - *id001
+    - type: custom:stack-in-card
+      card_mod:
+        style: 'ha-card { border: 1px solid var(--divider-color); border-top: 4px solid #14b8a6; border-radius: 14px; box-shadow:
+          none; }'
+      cards:
+      - type: custom:mushroom-template-card
+        primary: Obergeschoss
+        secondary: Diese Ansicht wird in einem der nächsten Patches aufgebaut.
+        tap_action:
+          action: navigate
+          navigation_path: /living-room-pilot/overview
+        card_mod:
+          style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+- title: Dachgeschoss
+  path: second_floor
+  type: sections
+  max_columns: 1
+  sections:
+  - type: grid
+    cards:
+    - *id001
+    - type: custom:stack-in-card
+      card_mod:
+        style: 'ha-card { border: 1px solid var(--divider-color); border-top: 4px solid #8b5cf6; border-radius: 14px; box-shadow:
+          none; }'
+      cards:
+      - type: custom:mushroom-template-card
+        primary: Dachgeschoss
+        secondary: Diese Ansicht wird in einem der nächsten Patches aufgebaut.
+        tap_action:
+          action: navigate
+          navigation_path: /living-room-pilot/overview
+        card_mod:
+          style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+- title: Garten
+  path: garden
+  type: sections
+  max_columns: 1
+  sections:
+  - type: grid
+    cards:
+    - *id001
+    - type: custom:stack-in-card
+      card_mod:
+        style: 'ha-card { border: 1px solid var(--divider-color); border-top: 4px solid #22a260; border-radius: 14px; box-shadow:
+          none; }'
+      cards:
+      - type: custom:mushroom-template-card
+        primary: Garten
+        secondary: Diese Ansicht wird in einem der nächsten Patches aufgebaut.
+        tap_action:
+          action: navigate
+          navigation_path: /living-room-pilot/overview
+        card_mod:
+          style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'

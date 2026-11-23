@@ -346,6 +346,26 @@ template:
               value: "{{ temperature | float }}"
 
 script:
+  light_brightness_step_sim:
+    alias: Lichthelligkeit schrittweise ändern (Sim)
+    mode: parallel
+    fields:
+      entity_id:
+        required: true
+      step:
+        required: true
+    sequence:
+      - variables:
+          current_pct: >-
+            {{ ((state_attr(entity_id, 'brightness') | int(128)) * 100 / 255) | round(0) | int }}
+          target_pct: >-
+            {{ [100, [10, current_pct + (step | int)] | max] | min }}
+      - action: light.turn_on
+        target:
+          entity_id: "{{ entity_id }}"
+        data:
+          brightness_pct: "{{ target_pct }}"
+
   dashboard_theme_toggle_sim:
     alias: Dashboard Theme umschalten (Sim)
     mode: restart
