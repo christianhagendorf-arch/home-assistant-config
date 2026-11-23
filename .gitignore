@@ -50,3 +50,6 @@ www/community/
 # Local patch workflow files
 /[0-9][0-9][0-9][0-9]-*.patch
 /[0-9][0-9][0-9][0-9]-*.md
+
+# Patch folder
+patches/

@@ -7,6 +7,34 @@ views:
   - type: grid
     cards:
     - type: custom:stack-in-card
+      mode: horizontal
+      card_mod:
+        style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
+          \  min-height: 38px;\n}"
+      cards:
+      - type: custom:mushroom-template-card
+        primary: Zuhause (Sim)
+        tap_action:
+          action: none
+        card_mod:
+          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: rgba(var(--rgb-primary-text-color),\
+            \ 0.022) !important;\n  --card-primary-font-size: 13px;\n  --card-primary-line-height: 17px;\n}\nmushroom-state-item\
+            \ {\n  min-height: 28px;\n  padding: 3px 10px 1px !important;\n}"
+      - type: custom:mushroom-chips-card
+        alignment: end
+        chips:
+        - type: template
+          entity: input_select.dashboard_theme_sim
+          icon: '{{ ''mdi:weather-night'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''mdi:weather-sunny''
+            }}'
+          icon_color: '{{ ''indigo'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''amber'' }}'
+          tap_action:
+            action: perform-action
+            perform_action: script.dashboard_theme_toggle_sim
+        card_mod:
+          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
+            \  padding: 3px 4px 0 0 !important;\n}"
+    - type: custom:stack-in-card
       grid_options:
         columns: 12
       card_mod:
@@ -19,9 +47,9 @@ views:
         tap_action:
           action: none
         card_mod:
-          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-            \  --card-primary-font-size: 14px;\n  --card-primary-line-height: 18px;\n  padding: 0 !important;\n}\nmushroom-state-item\
-            \ {\n  min-height: 27px;\n  padding: 2px 10px 0 !important;\n}\n"
+          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: rgba(var(--rgb-primary-text-color),\
+            \ 0.022) !important;\n  --card-primary-font-size: 13px;\n  --card-primary-line-height: 17px;\n}\nmushroom-state-item\
+            \ {\n  min-height: 28px;\n  padding: 3px 10px 1px !important;\n}"
       - type: custom:mushroom-light-card
         entity: light.entrance_outside_sim
         name: Außenbeleuchtung
@@ -46,9 +74,9 @@ views:
         tap_action:
           action: none
         card_mod:
-          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-            \  --card-primary-font-size: 14px;\n  --card-primary-line-height: 18px;\n  padding: 0 !important;\n}\nmushroom-state-item\
-            \ {\n  min-height: 27px;\n  padding: 2px 10px 0 !important;\n}\n"
+          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: rgba(var(--rgb-primary-text-color),\
+            \ 0.022) !important;\n  --card-primary-font-size: 13px;\n  --card-primary-line-height: 17px;\n}\nmushroom-state-item\
+            \ {\n  min-height: 28px;\n  padding: 3px 10px 1px !important;\n}"
       - type: custom:mushroom-light-card
         entity: light.utility_room_ceiling_sim
         name: Licht
@@ -73,9 +101,9 @@ views:
         tap_action:
           action: none
         card_mod:
-          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-            \  --card-primary-font-size: 14px;\n  --card-primary-line-height: 18px;\n  padding: 0 !important;\n}\nmushroom-state-item\
-            \ {\n  min-height: 27px;\n  padding: 2px 10px 0 !important;\n}\n"
+          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: rgba(var(--rgb-primary-text-color),\
+            \ 0.022) !important;\n  --card-primary-font-size: 13px;\n  --card-primary-line-height: 17px;\n}\nmushroom-state-item\
+            \ {\n  min-height: 28px;\n  padding: 3px 10px 1px !important;\n}"
       - type: custom:mushroom-light-card
         entity: light.guest_bathroom_ceiling_sim
         name: Licht
@@ -96,7 +124,7 @@ views:
         - type: custom:stack-in-card
           card_mod:
             style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: rgba(var(--rgb-primary-text-color),\
-              \ 0.035) !important;\n  border-radius: 12px !important;\n}\n"
+              \ 0.035) !important;\n  border-radius: 10px !important;\n  --mush-icon-border-radius: 9px;\n}"
           cards:
           - type: custom:mushroom-template-card
             entity: input_boolean.washing_machine_power_sim
@@ -113,7 +141,8 @@ views:
               action: more-info
             card_mod:
               style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-                }\n"
+                \  --card-primary-font-size: 12px;\n  --card-secondary-font-size: 10px;\n}\nmushroom-state-item {\n  min-width:\
+                \ 0;\n  padding-right: 0 !important;\n}"
           - type: custom:mushroom-chips-card
             alignment: end
             chips:
@@ -127,12 +156,12 @@ views:
                 action: toggle
             card_mod:
               style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-                \  padding: 8px 8px 0 0 !important;\n}"
+                \  padding: 7px 6px 0 0 !important;\n  --mush-chip-border-radius: 9px;\n}"
           mode: horizontal
         - type: custom:stack-in-card
           card_mod:
             style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: rgba(var(--rgb-primary-text-color),\
-              \ 0.035) !important;\n  border-radius: 12px !important;\n}\n"
+              \ 0.035) !important;\n  border-radius: 10px !important;\n  --mush-icon-border-radius: 9px;\n}"
           cards:
           - type: custom:mushroom-template-card
             entity: input_boolean.dryer_power_sim
@@ -149,7 +178,8 @@ views:
               action: more-info
             card_mod:
               style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-                }\n"
+                \  --card-primary-font-size: 12px;\n  --card-secondary-font-size: 10px;\n}\nmushroom-state-item {\n  min-width:\
+                \ 0;\n  padding-right: 0 !important;\n}"
           - type: custom:mushroom-chips-card
             alignment: end
             chips:
@@ -162,24 +192,10 @@ views:
                 action: toggle
             card_mod:
               style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-                \  padding: 8px 8px 0 0 !important;\n}"
+                \  padding: 7px 6px 0 0 !important;\n  --mush-chip-border-radius: 9px;\n}"
           mode: horizontal
   - type: grid
     cards:
-    - type: custom:mushroom-chips-card
-      alignment: end
-      chips:
-      - type: template
-        entity: input_select.dashboard_theme_sim
-        icon: '{{ ''mdi:weather-night'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''mdi:weather-sunny''
-          }}'
-        icon_color: '{{ ''indigo'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''amber'' }}'
-        tap_action:
-          action: perform-action
-          perform_action: script.dashboard_theme_toggle_sim
-      card_mod:
-        style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-          \  padding: 0 4px 0 !important;\n}"
     - type: custom:stack-in-card
       grid_options:
         columns: 12
@@ -193,9 +209,9 @@ views:
         tap_action:
           action: none
         card_mod:
-          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-            \  --card-primary-font-size: 14px;\n  --card-primary-line-height: 18px;\n  padding: 0 !important;\n}\nmushroom-state-item\
-            \ {\n  min-height: 27px;\n  padding: 2px 10px 0 !important;\n}\n"
+          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: rgba(var(--rgb-primary-text-color),\
+            \ 0.022) !important;\n  --card-primary-font-size: 13px;\n  --card-primary-line-height: 17px;\n}\nmushroom-state-item\
+            \ {\n  min-height: 28px;\n  padding: 3px 10px 1px !important;\n}"
       - type: custom:stack-in-card
         mode: horizontal
         card_mod:
@@ -259,9 +275,8 @@ views:
       - type: custom:stack-in-card
         mode: horizontal
         card_mod:
-          style: "ha-card {\n  border: 0 !important;\n  border-top: 1px solid var(--divider-color) !important;\n  border-radius:\
-            \ 0 !important;\n  box-shadow: none !important;\n  background: rgba(var(--rgb-primary-text-color), 0.035) !important;\n\
-            }"
+          style: "ha-card {\n  border: 0 !important;\n  border-radius: 0 !important;\n  box-shadow: none !important;\n  background:\
+            \ rgba(var(--rgb-primary-text-color), 0.035) !important;\n}"
         cards:
         - type: custom:mushroom-entity-card
           entity: sensor.kitchen_temperature_sim
@@ -303,9 +318,9 @@ views:
         tap_action:
           action: none
         card_mod:
-          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n\
-            \  --card-primary-font-size: 14px;\n  --card-primary-line-height: 18px;\n  padding: 0 !important;\n}\nmushroom-state-item\
-            \ {\n  min-height: 27px;\n  padding: 2px 10px 0 !important;\n}\n"
+          style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: rgba(var(--rgb-primary-text-color),\
+            \ 0.022) !important;\n  --card-primary-font-size: 13px;\n  --card-primary-line-height: 17px;\n}\nmushroom-state-item\
+            \ {\n  min-height: 28px;\n  padding: 3px 10px 1px !important;\n}"
       - type: custom:mushroom-light-card
         entity: light.living_room_demo_light_sim
         name: Dimmer
@@ -350,9 +365,8 @@ views:
       - type: custom:stack-in-card
         mode: horizontal
         card_mod:
-          style: "ha-card {\n  border: 0 !important;\n  border-top: 1px solid var(--divider-color) !important;\n  border-radius:\
-            \ 0 !important;\n  box-shadow: none !important;\n  background: rgba(var(--rgb-primary-text-color), 0.035) !important;\n\
-            }"
+          style: "ha-card {\n  border: 0 !important;\n  border-radius: 0 !important;\n  box-shadow: none !important;\n  background:\
+            \ rgba(var(--rgb-primary-text-color), 0.035) !important;\n}"
         cards:
         - type: custom:mushroom-entity-card
           entity: sensor.living_room_temperature_sim
