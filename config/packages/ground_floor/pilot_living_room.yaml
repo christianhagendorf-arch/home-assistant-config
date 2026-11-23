@@ -82,6 +82,10 @@ input_number:
     initial: 112
 
 input_select:
+  dashboard_theme_sim:
+    name: Dashboard Theme (Sim)
+    options: ["light", "dark"]
+    initial: "light"
   living_room_hvac_mode_sim:
     name: Wohnzimmer Heizmodus (Sim)
     options: ["off", "heat"]
@@ -342,6 +346,22 @@ template:
               value: "{{ temperature | float }}"
 
 script:
+  dashboard_theme_toggle_sim:
+    alias: Dashboard Theme umschalten (Sim)
+    mode: restart
+    sequence:
+      - variables:
+          next_mode: "{{ 'dark' if is_state('input_select.dashboard_theme_sim', 'light') else 'light' }}"
+      - action: frontend.set_theme
+        data:
+          name: "{{ 'Night Control Dark' if next_mode == 'dark' else 'Night Control Light' }}"
+          name_dark: "{{ 'Night Control Dark' if next_mode == 'dark' else 'none' }}"
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.dashboard_theme_sim
+        data:
+          option: "{{ next_mode }}"
+
   living_room_heat_toggle_sim:
     alias: Wohnzimmer Heizung umschalten (Sim)
     mode: queued

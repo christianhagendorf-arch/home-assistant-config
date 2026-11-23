@@ -1,0 +1,21 @@
+Night Control Light:
+  modes:
+    light:
+      primary-background-color: "#e9eef4"
+      secondary-background-color: "#f3f6fa"
+      card-background-color: "#ffffff"
+      primary-text-color: "#1e293b"
+      secondary-text-color: "#526176"
+      divider-color: "#b6c3d1"
+      primary-color: "#2563eb"
+      accent-color: "#d69a22"
+      state-light-active-color: "#d69a22"
+      state-climate-heat-color: "#d9822b"
+      ha-card-border-radius: "14px"
+      ha-card-box-shadow: "none"
+      mush-icon-border-radius: "9px"
+      mush-control-border-radius: "9px"
+      mush-chip-border-radius: "9px"
+      mush-spacing: "8px"
+      mush-card-primary-font-size: "13px"
+      mush-card-secondary-font-size: "11px"
