@@ -53,3 +53,11 @@ Short working list for accepted design debt and later validation.
 - Validate Lotta window heating as a separate function before defining real control logic.
 - Confirm the temperature-only DG hall row remains understandable without climate control.
 - Confirm the DG bathroom remains clear with climate only and no other functions.
+
+
+## Patch 0024 validation
+
+- Verify corrected DG hall light entity.
+- Validate Lotta window heating as a separate climate footer with window icon, temperature, target, and `hvac_action`.
+- Validate Garden and Playhouse on the primary smartphone HMI.
+- Confirm centralized package lists keep export and deployment archives synchronized.
