@@ -7,13 +7,17 @@ param(
     [switch]$DryRunOnly,
     [switch]$ExportSources,
 
+    [ValidateRange(1, 9999)]
+    [int]$AfterPatchNumber,
+
     [string[]]$ExportFiles = @(
         'config/dashboards/living-room-pilot.yaml',
         'config/packages/ground_floor/pilot_living_room.yaml',
         'config/themes/night_control_light.yaml',
         'config/themes/night_control_dark.yaml',
         'tools/deploy_ha_test.py',
-        'tools/apply_deploy_patch.ps1'
+        'tools/apply_deploy_patch.ps1',
+        'docs/DESIGN_BACKLOG.md'
     ),
 
     [string]$Repository = 'D:\GitHub\home-assistant-config',
@@ -57,7 +61,10 @@ $patchDirectory = Join-Path $Repository 'patches'
 
 if ($ExportSources) {
     if ($Deploy -or $DryRunOnly -or $PatchNumber -ne 0) {
-        throw 'Use -ExportSources by itself. Do not combine it with -PatchNumber, -Deploy, or -DryRunOnly.'
+        throw 'Use -ExportSources with -AfterPatchNumber. Do not combine it with -PatchNumber, -Deploy, or -DryRunOnly.'
+    }
+    if (-not $PSBoundParameters.ContainsKey('AfterPatchNumber')) {
+        throw 'Specify -AfterPatchNumber when using -ExportSources.'
     }
 
     $trackedStatus = @(Get-TrackedStatus)
@@ -84,60 +91,45 @@ if ($ExportSources) {
     $sha = (& git rev-parse --short=12 HEAD).Trim()
     Assert-LastExitCode 'Unable to determine current commit'
     $timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+    $patchLabel = '{0:D4}' -f $AfterPatchNumber
     New-Item -ItemType Directory -Force -Path $patchDirectory | Out-Null
-    $zipPath = Join-Path $patchDirectory "source-export-$timestamp-$sha.zip"
-    $tempDirectory = Join-Path $env:TEMP "ha-source-export-$timestamp-$sha"
+    $exportPath = Join-Path $patchDirectory "$patchLabel-source-export-$timestamp-$sha.md"
 
-    if (Test-Path -LiteralPath $tempDirectory) {
-        Remove-Item -LiteralPath $tempDirectory -Recurse -Force
-    }
-    New-Item -ItemType Directory -Path $tempDirectory | Out-Null
-
-    try {
-        foreach ($relativePath in $ExportFiles) {
-            $sourcePath = Join-Path $Repository $relativePath
-            $destinationPath = Join-Path $tempDirectory $relativePath
-            $destinationDirectory = Split-Path -Parent $destinationPath
-            New-Item -ItemType Directory -Force -Path $destinationDirectory | Out-Null
-            Copy-Item -LiteralPath $sourcePath -Destination $destinationPath
+    $statusText = ((& git status --short --branch) -join [Environment]::NewLine)
+    Assert-LastExitCode 'Unable to record Git status'
+    $content = [System.Collections.Generic.List[string]]::new()
+    foreach ($line in @(
+        '# Home Assistant Source Export', '', "State after patch: $patchLabel",
+        "Created: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss K')", "Branch: $branch", "Commit: $sha",
+        '', '## Git status', '', '````text', $statusText, '````', '', '## Included files', ''
+    )) { $content.Add($line) }
+    foreach ($relativePath in $ExportFiles) { $content.Add('- ' + $relativePath) }
+    foreach ($relativePath in $ExportFiles) {
+        $extension = [System.IO.Path]::GetExtension($relativePath).ToLowerInvariant()
+        $language = switch ($extension) {
+            '.yaml' { 'yaml' }
+            '.yml' { 'yaml' }
+            '.py' { 'python' }
+            '.ps1' { 'powershell' }
+            '.md' { 'markdown' }
+            default { 'text' }
         }
-
-        $statusText = ((& git status --short --branch) -join [Environment]::NewLine)
-        Assert-LastExitCode 'Unable to record Git status'
-        $manifest = @(
-            'Home Assistant dashboard source export'
-            "Created: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss K')"
-            "Repository: $Repository"
-            "Branch: $branch"
-            "Commit: $sha"
-            ''
-            'Git status:'
-            $statusText
-            ''
-            'Included files:'
-            ($ExportFiles | ForEach-Object { "- $_" })
-        )
-        $manifest | Set-Content -LiteralPath (Join-Path $tempDirectory 'SOURCE_EXPORT_MANIFEST.txt') -Encoding UTF8
-
-        if (Test-Path -LiteralPath $zipPath) {
-            Remove-Item -LiteralPath $zipPath -Force
-        }
-        Compress-Archive -Path (Join-Path $tempDirectory '*') -DestinationPath $zipPath -CompressionLevel Optimal
-    }
-    finally {
-        if (Test-Path -LiteralPath $tempDirectory) {
-            Remove-Item -LiteralPath $tempDirectory -Recurse -Force
-        }
+        $fileContent = Get-Content -LiteralPath (Join-Path $Repository $relativePath) -Raw -Encoding UTF8
+        foreach ($line in @(
+            '', ('## FILE: ' + $relativePath), '', ('<!-- BEGIN FILE: ' + $relativePath + ' -->'),
+            ('````' + $language), $fileContent, '````', ('<!-- END FILE: ' + $relativePath + ' -->')
+        )) { $content.Add($line) }
     }
 
+    $content | Set-Content -LiteralPath $exportPath -Encoding UTF8
     Write-Host ''
     Write-Host 'Source export completed successfully.' -ForegroundColor Green
-    Write-Host "ZIP       : $zipPath"
+    Write-Host "Export    : $exportPath"
+    Write-Host "State     : after patch $patchLabel"
     Write-Host "Branch    : $branch"
     Write-Host "Commit    : $sha"
-    Write-Host 'Upload this ZIP for the next patch preparation.'
-    exit 0
-}
+    Write-Host 'Upload this Markdown file for the next patch preparation.'
+    exit 0}
 
 if ($PatchNumber -lt 1) {
     throw 'Specify -PatchNumber for patch/deployment mode, or use -ExportSources.'

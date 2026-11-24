@@ -181,7 +181,7 @@ views:
             entity: light.kitchen_worktop_sim
             primary: Arbeitsfläche
             icon: mdi:countertop-outline
-            icon_color: '{{ ''amber'' if is_state(entity, ''on'') else ''grey'' }}'
+            icon_color: '{{ ''var(--state-light-active-color)'' if is_state(entity, ''on'') else ''grey'' }}'
             tap_action:
               action: toggle
             hold_action:
@@ -219,7 +219,7 @@ views:
             entity: light.kitchen_coffee_corner_sim
             primary: Kaffee-Ecke
             icon: mdi:coffee-outline
-            icon_color: '{{ ''amber'' if is_state(entity, ''on'') else ''grey'' }}'
+            icon_color: '{{ ''var(--state-light-active-color)'' if is_state(entity, ''on'') else ''grey'' }}'
             tap_action:
               action: toggle
             hold_action:
@@ -321,7 +321,7 @@ views:
             entity: light.living_room_demo_light_sim
             primary: Dimmer
             icon: mdi:lightbulb-outline
-            icon_color: '{{ ''amber'' if is_state(entity, ''on'') else ''grey'' }}'
+            icon_color: '{{ ''var(--state-light-active-color)'' if is_state(entity, ''on'') else ''grey'' }}'
             tap_action:
               action: toggle
             hold_action:

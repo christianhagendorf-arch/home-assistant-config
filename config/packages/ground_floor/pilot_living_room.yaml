@@ -385,7 +385,7 @@ script:
       - action: frontend.set_theme
         data:
           name: "{{ 'Night Control Dark' if next_mode == 'dark' else 'Night Control Light' }}"
-          name_dark: "{{ 'Night Control Dark' if next_mode == 'dark' else 'none' }}"
+          name_dark: "{{ 'Night Control Dark' if next_mode == 'dark' else 'Night Control Light' }}"
       - action: input_select.select_option
         target:
           entity_id: input_select.dashboard_theme_sim

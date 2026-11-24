@@ -11,12 +11,12 @@ Short working list for accepted design debt and later validation.
 
 ## Lighting
 
-- Align active colors of dimmable Template Cards and regular Mushroom Light Cards through `state-light-active-color`; remove hard-coded `amber` values.
+- Verify active light colors after Patch 0020; dimmable Template Cards now use `state-light-active-color` instead of hard-coded `amber`.
 - Keep sliders in More Info or detail views. Main views use compact step controls for now.
 
 ## Themes
 
-- Diagnose the Light/Dark switch: helper state, script execution, exact theme names, `frontend.set_theme`, and possible user-profile theme override.
+- Verify the Light/Dark switch with the user profile set to `Backend-selected`. `frontend.set_theme` cannot override a theme manually fixed in a user profile.
 - Decide later whether theme selection should be global, per user, or per browser/device.
 
 ## Washer and dryer
