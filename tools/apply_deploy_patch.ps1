@@ -20,7 +20,10 @@ param(
         'tools/deploy_ha_test.py',
         'tools/apply_deploy_patch.ps1',
         'docs/DESIGN_BACKLOG.md',
-        'docs/ROADMAP.md'    ),
+        'docs/ROADMAP.md',
+        'docs/SIMULATION_BASELINE.md',
+        'docs/PULL_REQUEST_SIMULATION_BASELINE.md',
+        'docs/MERGE_CHECKLIST.md'    ),
 
     [string]$Repository = 'D:\GitHub\home-assistant-config',
     [string]$Target = 'ha-test'

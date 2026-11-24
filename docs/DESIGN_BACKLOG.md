@@ -70,3 +70,21 @@ Short working list for accepted design debt and later validation.
 - Before restoring a visible switch, decide global versus per-user versus per-browser/device behavior and verify `frontend.set_theme` with profile overrides.
 - Recheck the two-level visual framing (floor container plus room borders) during final full-house acceptance; retain it unless mobile orientation suffers.
 - Function labels are room-local and concise: use `Licht` inside personal rooms and `Dachbeleuchtung` in Kinderhaus.
+
+
+## Merge classification after Patch 0025
+
+### Accepted after merge
+
+- visible Theme switch remains removed
+- light/climate control styling may be refined later
+- floor/room border weight may be refined after real entity experience
+- popup/detail and RGB-preset work remains later
+
+### Before real migration
+
+- document room-by-room heating architecture
+- document Better Thermostat candidates
+- document living-room/kitchen floor-heating actuators and circulation-pump rules
+- validate washer/dryer fast-restart automation before adding a reset control
+- inventory MQTT topics and control ownership

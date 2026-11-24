@@ -34,3 +34,11 @@ Living room and kitchen use floor-heating actuators connected through Sonoff Min
 ## Later detail phase
 
 Evaluate detail sliders, RGB presets, HVAC modes, cover position, Lotta window heating, office pinboard/platform, popup components, reusable templates, and technical-dashboard components after the main house controls and real entity behavior are stable.
+
+
+## Patch 0026 merge preparation
+
+- The complete simulated house HMI is accepted through Patch 0025.
+- Patch 0026 adds the immutable baseline description, merge checklist, and pull-request template.
+- After the checklist is complete, merge `feature/living-room-pilot` to `main`.
+- Create `feature/mqtt-readonly-baseline` from updated `main`; never experiment with real MQTT or entity controls directly on `main`.
