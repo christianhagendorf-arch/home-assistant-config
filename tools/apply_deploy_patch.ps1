@@ -1,11 +1,20 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true)]
-    [ValidateRange(1, 9999)]
-    [int]$PatchNumber,
+    [ValidateRange(0, 9999)]
+    [int]$PatchNumber = 0,
 
     [switch]$Deploy,
     [switch]$DryRunOnly,
+    [switch]$ExportSources,
+
+    [string[]]$ExportFiles = @(
+        'config/dashboards/living-room-pilot.yaml',
+        'config/packages/ground_floor/pilot_living_room.yaml',
+        'config/themes/night_control_light.yaml',
+        'config/themes/night_control_dark.yaml',
+        'tools/deploy_ha_test.py',
+        'tools/apply_deploy_patch.ps1'
+    ),
 
     [string]$Repository = 'D:\GitHub\home-assistant-config',
     [string]$Target = 'ha-test'
@@ -44,10 +53,98 @@ if ($branch -notmatch '^feature/.+') {
     throw "Unexpected branch '$branch'. Patch work must run on a feature/* branch."
 }
 
-$number = '{0:D4}' -f $PatchNumber
 $patchDirectory = Join-Path $Repository 'patches'
-$patches = @(Get-ChildItem -LiteralPath $patchDirectory -File -Filter "$number-*.patch")
 
+if ($ExportSources) {
+    if ($Deploy -or $DryRunOnly -or $PatchNumber -ne 0) {
+        throw 'Use -ExportSources by itself. Do not combine it with -PatchNumber, -Deploy, or -DryRunOnly.'
+    }
+
+    $trackedStatus = @(Get-TrackedStatus)
+    if ($trackedStatus.Count -gt 0) {
+        $trackedStatus | ForEach-Object { Write-Host $_ }
+        throw 'Tracked working tree changes exist. Commit, restore, or stash them before exporting sources.'
+    }
+
+    $missingFiles = @($ExportFiles | Where-Object {
+        -not (Test-Path -LiteralPath (Join-Path $Repository $_))
+    })
+    if ($missingFiles.Count -gt 0) {
+        $missingFiles | ForEach-Object { Write-Host "Missing: $_" }
+        throw 'One or more requested source files do not exist.'
+    }
+
+    $untrackedFiles = @(& git ls-files --others --exclude-standard -- $ExportFiles)
+    Assert-LastExitCode 'Unable to validate source tracking state'
+    if ($untrackedFiles.Count -gt 0) {
+        $untrackedFiles | ForEach-Object { Write-Host "Untracked: $_" }
+        throw 'Source export accepts only versioned repository files.'
+    }
+
+    $sha = (& git rev-parse --short=12 HEAD).Trim()
+    Assert-LastExitCode 'Unable to determine current commit'
+    $timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+    New-Item -ItemType Directory -Force -Path $patchDirectory | Out-Null
+    $zipPath = Join-Path $patchDirectory "source-export-$timestamp-$sha.zip"
+    $tempDirectory = Join-Path $env:TEMP "ha-source-export-$timestamp-$sha"
+
+    if (Test-Path -LiteralPath $tempDirectory) {
+        Remove-Item -LiteralPath $tempDirectory -Recurse -Force
+    }
+    New-Item -ItemType Directory -Path $tempDirectory | Out-Null
+
+    try {
+        foreach ($relativePath in $ExportFiles) {
+            $sourcePath = Join-Path $Repository $relativePath
+            $destinationPath = Join-Path $tempDirectory $relativePath
+            $destinationDirectory = Split-Path -Parent $destinationPath
+            New-Item -ItemType Directory -Force -Path $destinationDirectory | Out-Null
+            Copy-Item -LiteralPath $sourcePath -Destination $destinationPath
+        }
+
+        $statusText = ((& git status --short --branch) -join [Environment]::NewLine)
+        Assert-LastExitCode 'Unable to record Git status'
+        $manifest = @(
+            'Home Assistant dashboard source export'
+            "Created: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss K')"
+            "Repository: $Repository"
+            "Branch: $branch"
+            "Commit: $sha"
+            ''
+            'Git status:'
+            $statusText
+            ''
+            'Included files:'
+            ($ExportFiles | ForEach-Object { "- $_" })
+        )
+        $manifest | Set-Content -LiteralPath (Join-Path $tempDirectory 'SOURCE_EXPORT_MANIFEST.txt') -Encoding UTF8
+
+        if (Test-Path -LiteralPath $zipPath) {
+            Remove-Item -LiteralPath $zipPath -Force
+        }
+        Compress-Archive -Path (Join-Path $tempDirectory '*') -DestinationPath $zipPath -CompressionLevel Optimal
+    }
+    finally {
+        if (Test-Path -LiteralPath $tempDirectory) {
+            Remove-Item -LiteralPath $tempDirectory -Recurse -Force
+        }
+    }
+
+    Write-Host ''
+    Write-Host 'Source export completed successfully.' -ForegroundColor Green
+    Write-Host "ZIP       : $zipPath"
+    Write-Host "Branch    : $branch"
+    Write-Host "Commit    : $sha"
+    Write-Host 'Upload this ZIP for the next patch preparation.'
+    exit 0
+}
+
+if ($PatchNumber -lt 1) {
+    throw 'Specify -PatchNumber for patch/deployment mode, or use -ExportSources.'
+}
+
+$number = '{0:D4}' -f $PatchNumber
+$patches = @(Get-ChildItem -LiteralPath $patchDirectory -File -Filter "$number-*.patch")
 if ($patches.Count -ne 1) {
     throw "Expected exactly one patch matching patches\$number-*.patch, found $($patches.Count)."
 }
@@ -72,36 +169,48 @@ if (-not $Deploy) {
 
     Write-Host 'Checking resulting diff...'
     Invoke-Native git diff --check
-    & git --no-pager diff --stat
-    Assert-LastExitCode 'Unable to display diff summary'
-    & git status --short
-    Assert-LastExitCode 'Unable to display Git status'
 
     Write-Host ''
-    Write-Host 'Patch applied. Review the diff, then commit in Visual Studio Code and push with GitHub Desktop.' -ForegroundColor Green
+    Write-Host 'Changed files:'
+    & git status --short --untracked-files=no
+    Assert-LastExitCode 'Unable to show Git status'
+
+    Write-Host ''
+    Write-Host 'Diff summary:'
+    & git --no-pager diff --stat
+    Assert-LastExitCode 'Unable to show diff summary'
+
+    Write-Host ''
+    Write-Host 'Patch applied successfully.' -ForegroundColor Green
+    Write-Host 'Review the diff, then commit in Visual Studio Code and push in GitHub Desktop.'
     exit 0
 }
 
-$trackedStatus = @(Get-TrackedStatus)
-if ($trackedStatus.Count -gt 0) {
-    $trackedStatus | ForEach-Object { Write-Host $_ }
+if ((Get-TrackedStatus).Count -gt 0) {
     throw 'Tracked working tree changes exist. Commit them before deployment.'
 }
 
-$aheadBehind = (& git rev-list --left-right --count "origin/$branch...HEAD").Trim() -split '\s+'
-Assert-LastExitCode 'Unable to compare local branch with origin'
-if ($aheadBehind.Count -lt 2 -or [int]$aheadBehind[1] -gt 0) {
-    throw 'Local commits have not been pushed to origin. Push with GitHub Desktop before deployment.'
+$upstream = (& git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>$null).Trim()
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($upstream)) {
+    throw 'The current branch has no upstream. Publish/push the branch first.'
+}
+
+$localSha = (& git rev-parse HEAD).Trim()
+Assert-LastExitCode 'Unable to determine local commit'
+$upstreamSha = (& git rev-parse '@{u}').Trim()
+Assert-LastExitCode 'Unable to determine upstream commit'
+if ($localSha -ne $upstreamSha) {
+    throw 'Local HEAD is not equal to upstream. Push the commit before deployment.'
 }
 
 $hostName = (& ssh $Target hostname).Trim()
-Assert-LastExitCode 'SSH target check failed'
+Assert-LastExitCode 'Unable to verify target host'
 if ($hostName -cne 'ha-test') {
-    throw "Deployment target check failed. Received hostname '$hostName'."
+    throw "Unexpected deployment target '$hostName'."
 }
 
 $sha = (& git rev-parse --short=12 HEAD).Trim()
-Assert-LastExitCode 'Unable to determine current Git commit'
+Assert-LastExitCode 'Unable to determine short commit'
 $archive = Join-Path $env:TEMP "ha-pilot-$sha.tar"
 if (Test-Path -LiteralPath $archive) {
     Remove-Item -LiteralPath $archive -Force
