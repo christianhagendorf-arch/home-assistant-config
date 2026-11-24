@@ -484,6 +484,33 @@ views:
                   step: 10
             card_mod:
               style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; padding: 6px 8px 0 0 !important; --chip-height: 28px; --chip-icon-size: 14px; --chip-border-radius: 6px; --chip-spacing: 3px; }'
+        - type: custom:stack-in-card
+          mode: horizontal
+          card_mod:
+            style: 'ha-card { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background: rgba(var(--rgb-primary-text-color), 0.035) !important; }'
+          cards:
+          - type: custom:mushroom-entity-card
+            entity: sensor.first_floor_hall_temperature_sim
+            icon: mdi:thermometer
+            layout: horizontal
+            primary_info: state
+            secondary_info: none
+            card_mod:
+              style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+          - type: custom:mushroom-climate-card
+            entity: climate.first_floor_hall_sim
+            layout: horizontal
+            icon: mdi:radiator
+            show_temperature_control: true
+            primary_info: none
+            secondary_info: none
+            tap_action:
+              action: perform-action
+              perform_action: script.first_floor_hall_heat_toggle_sim
+            hold_action:
+              action: more-info
+            card_mod:
+              style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
       - type: custom:stack-in-card
         grid_options:
           columns: 12

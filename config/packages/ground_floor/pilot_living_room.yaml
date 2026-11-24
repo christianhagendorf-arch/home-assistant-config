@@ -1,4 +1,3 @@
-# Simulation only. No production entity references.
 input_boolean:
   living_room_demo_light_power_sim:
     name: Wohnzimmer Demolicht Schalter (Sim)
@@ -32,7 +31,6 @@ input_boolean:
   dryer_notification_sim:
     name: Trockner Benachrichtigung (Sim)
     initial: true
-
 input_number:
   living_room_temperature_input_sim:
     name: Wohnzimmer Istwert Vorgabe (Sim)
@@ -40,13 +38,13 @@ input_number:
     max: 35
     step: 0.1
     initial: 20.3
-    unit_of_measurement: "°C"
+    unit_of_measurement: °C
   living_room_target_temperature_sim:
     name: Wohnzimmer Sollwert (Sim)
     min: 16
     max: 24
     step: 0.5
-    unit_of_measurement: "°C"
+    unit_of_measurement: °C
     initial: 21
   living_room_demo_brightness_sim:
     name: Wohnzimmer Helligkeit (Sim)
@@ -60,13 +58,13 @@ input_number:
     max: 35
     step: 0.1
     initial: 21.8
-    unit_of_measurement: "°C"
+    unit_of_measurement: °C
   kitchen_target_temperature_sim:
     name: Küche Sollwert (Sim)
     min: 16
     max: 24
     step: 0.5
-    unit_of_measurement: "°C"
+    unit_of_measurement: °C
     initial: 21.5
   kitchen_worktop_brightness_sim:
     name: Küche Arbeitsfläche Helligkeit (Sim)
@@ -80,271 +78,251 @@ input_number:
     max: 255
     step: 1
     initial: 112
-
 input_select:
   dashboard_theme_sim:
     name: Dashboard Theme (Sim)
-    options: ["light", "dark"]
-    initial: "light"
+    options:
+    - light
+    - dark
+    initial: light
   living_room_hvac_mode_sim:
     name: Wohnzimmer Heizmodus (Sim)
-    options: ["off", "heat"]
-    initial: "off"
+    options:
+    - 'off'
+    - heat
+    initial: 'off'
   kitchen_hvac_mode_sim:
     name: Küche Heizmodus (Sim)
-    options: ["off", "heat"]
-    initial: "heat"
+    options:
+    - 'off'
+    - heat
+    initial: heat
   washing_machine_state_sim:
     name: Waschmaschine Status (Sim)
-    options: ["Bereit", "Läuft", "Fertig"]
-    initial: "Läuft"
+    options:
+    - Bereit
+    - Läuft
+    - Fertig
+    initial: Läuft
   dryer_state_sim:
     name: Trockner Status (Sim)
-    options: ["Bereit", "Läuft", "Fertig"]
-    initial: "Fertig"
-
+    options:
+    - Bereit
+    - Läuft
+    - Fertig
+    initial: Fertig
 template:
-  - sensor:
-      - name: Wohnzimmer Temperatur (Sim)
-        default_entity_id: sensor.living_room_temperature_sim
-        unique_id: pilot_living_room_temperature_sim
-        device_class: temperature
-        unit_of_measurement: "°C"
-        state_class: measurement
-        availability: "{{ has_value('input_number.living_room_temperature_input_sim') }}"
-        state: "{{ states('input_number.living_room_temperature_input_sim') | float(none) }}"
-      - name: Küche Temperatur (Sim)
-        default_entity_id: sensor.kitchen_temperature_sim
-        unique_id: pilot_kitchen_temperature_sim
-        device_class: temperature
-        unit_of_measurement: "°C"
-        state_class: measurement
-        availability: "{{ has_value('input_number.kitchen_temperature_input_sim') }}"
-        state: "{{ states('input_number.kitchen_temperature_input_sim') | float(none) }}"
-
-  - light:
-      - name: Wohnzimmer Demolicht (Sim)
-        default_entity_id: light.living_room_demo_light_sim
-        unique_id: pilot_living_room_demo_light_sim
-        availability: >-
-          {{ has_value('input_boolean.living_room_demo_light_power_sim')
-             and has_value('input_number.living_room_demo_brightness_sim') }}
-        state: "{{ is_state('input_boolean.living_room_demo_light_power_sim', 'on') }}"
-        level: "{{ states('input_number.living_room_demo_brightness_sim') | int(153) }}"
-        turn_on:
-          - action: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.living_room_demo_light_power_sim
-        turn_off:
-          - action: input_boolean.turn_off
-            target:
-              entity_id: input_boolean.living_room_demo_light_power_sim
-        set_level:
-          - action: input_number.set_value
-            target:
-              entity_id: input_number.living_room_demo_brightness_sim
-            data:
-              value: "{{ brightness | int }}"
-          - action: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.living_room_demo_light_power_sim
-
-      - name: Wohnzimmer Bogenlampe (Sim)
-        default_entity_id: light.living_room_arc_lamp_sim
-        unique_id: pilot_living_room_arc_lamp_sim
-        availability: "{{ has_value('input_boolean.living_room_arc_lamp_power_sim') }}"
-        state: "{{ is_state('input_boolean.living_room_arc_lamp_power_sim', 'on') }}"
-        turn_on:
-          - action: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.living_room_arc_lamp_power_sim
-        turn_off:
-          - action: input_boolean.turn_off
-            target:
-              entity_id: input_boolean.living_room_arc_lamp_power_sim
-
-      - name: Hauseingang Außenbeleuchtung (Sim)
-        default_entity_id: light.entrance_outside_sim
-        unique_id: pilot_entrance_outside_sim
-        state: "{{ is_state('input_boolean.entrance_outside_power_sim', 'on') }}"
-        turn_on:
-          - action: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.entrance_outside_power_sim
-        turn_off:
-          - action: input_boolean.turn_off
-            target:
-              entity_id: input_boolean.entrance_outside_power_sim
-
-      - name: Küche Arbeitsfläche (Sim)
-        default_entity_id: light.kitchen_worktop_sim
-        unique_id: pilot_kitchen_worktop_sim
-        state: "{{ is_state('input_boolean.kitchen_worktop_power_sim', 'on') }}"
-        level: "{{ states('input_number.kitchen_worktop_brightness_sim') | int(184) }}"
-        turn_on:
-          - action: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.kitchen_worktop_power_sim
-        turn_off:
-          - action: input_boolean.turn_off
-            target:
-              entity_id: input_boolean.kitchen_worktop_power_sim
-        set_level:
-          - action: input_number.set_value
-            target:
-              entity_id: input_number.kitchen_worktop_brightness_sim
-            data:
-              value: "{{ brightness | int }}"
-          - action: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.kitchen_worktop_power_sim
-
-      - name: Küche Kaffee-Ecke (Sim)
-        default_entity_id: light.kitchen_coffee_corner_sim
-        unique_id: pilot_kitchen_coffee_corner_sim
-        state: "{{ is_state('input_boolean.kitchen_coffee_corner_power_sim', 'on') }}"
-        level: "{{ states('input_number.kitchen_coffee_corner_brightness_sim') | int(112) }}"
-        turn_on:
-          - action: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.kitchen_coffee_corner_power_sim
-        turn_off:
-          - action: input_boolean.turn_off
-            target:
-              entity_id: input_boolean.kitchen_coffee_corner_power_sim
-        set_level:
-          - action: input_number.set_value
-            target:
-              entity_id: input_number.kitchen_coffee_corner_brightness_sim
-            data:
-              value: "{{ brightness | int }}"
-          - action: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.kitchen_coffee_corner_power_sim
-
-      - name: Küche Essecke (Sim)
-        default_entity_id: light.kitchen_dining_corner_sim
-        unique_id: pilot_kitchen_dining_corner_sim
-        state: "{{ is_state('input_boolean.kitchen_dining_corner_power_sim', 'on') }}"
-        turn_on:
-          - action: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.kitchen_dining_corner_power_sim
-        turn_off:
-          - action: input_boolean.turn_off
-            target:
-              entity_id: input_boolean.kitchen_dining_corner_power_sim
-
-      - name: Küche Schwibbogen (Sim)
-        default_entity_id: light.kitchen_window_decoration_sim
-        unique_id: pilot_kitchen_window_decoration_sim
-        state: "{{ is_state('input_boolean.kitchen_window_decoration_power_sim', 'on') }}"
-        turn_on:
-          - action: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.kitchen_window_decoration_power_sim
-        turn_off:
-          - action: input_boolean.turn_off
-            target:
-              entity_id: input_boolean.kitchen_window_decoration_power_sim
-
-      - name: Gästebad Licht (Sim)
-        default_entity_id: light.guest_bathroom_ceiling_sim
-        unique_id: pilot_guest_bathroom_ceiling_sim
-        state: "{{ is_state('input_boolean.guest_bathroom_ceiling_power_sim', 'on') }}"
-        turn_on:
-          - action: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.guest_bathroom_ceiling_power_sim
-        turn_off:
-          - action: input_boolean.turn_off
-            target:
-              entity_id: input_boolean.guest_bathroom_ceiling_power_sim
-
-      - name: Hauswirtschaftsraum Licht (Sim)
-        default_entity_id: light.utility_room_ceiling_sim
-        unique_id: pilot_utility_room_ceiling_sim
-        state: "{{ is_state('input_boolean.utility_room_ceiling_power_sim', 'on') }}"
-        turn_on:
-          - action: input_boolean.turn_on
-            target:
-              entity_id: input_boolean.utility_room_ceiling_power_sim
-        turn_off:
-          - action: input_boolean.turn_off
-            target:
-              entity_id: input_boolean.utility_room_ceiling_power_sim
-
-  - climate:
-      - name: Wohnzimmer Heizung (Sim)
-        default_entity_id: climate.living_room_sim
-        unique_id: pilot_living_room_climate_sim
-        temperature_unit: "°C"
-        precision: 0.1
-        min_temperature: 16
-        max_temperature: 24
-        target_temperature_step: 0.5
-        availability: >-
-          {{ has_value('input_select.living_room_hvac_mode_sim')
-             and has_value('input_number.living_room_target_temperature_sim')
-             and has_value('sensor.living_room_temperature_sim') }}
-        current_temperature: "{{ states('sensor.living_room_temperature_sim') | float(none) }}"
-        target_temperature: "{{ states('input_number.living_room_target_temperature_sim') | float(none) }}"
-        hvac_modes: "{{ ['off', 'heat'] }}"
-        hvac_mode: "{{ states('input_select.living_room_hvac_mode_sim') }}"
-        hvac_action: >-
-          {% set current = states('sensor.living_room_temperature_sim') | float(none) %}
-          {% set target = states('input_number.living_room_target_temperature_sim') | float(none) %}
-          {% if is_state('input_select.living_room_hvac_mode_sim', 'off') %}off
-          {% elif current is not none and target is not none and current < target %}heating
-          {% else %}idle{% endif %}
-        set_hvac_mode:
-          - action: input_select.select_option
-            target:
-              entity_id: input_select.living_room_hvac_mode_sim
-            data:
-              option: "{{ hvac_mode }}"
-        set_temperature:
-          - action: input_number.set_value
-            target:
-              entity_id: input_number.living_room_target_temperature_sim
-            data:
-              value: "{{ temperature | float }}"
-
-      - name: Küche Heizung (Sim)
-        default_entity_id: climate.kitchen_sim
-        unique_id: pilot_kitchen_climate_sim
-        temperature_unit: "°C"
-        precision: 0.1
-        min_temperature: 16
-        max_temperature: 24
-        target_temperature_step: 0.5
-        availability: >-
-          {{ has_value('input_select.kitchen_hvac_mode_sim')
-             and has_value('input_number.kitchen_target_temperature_sim')
-             and has_value('sensor.kitchen_temperature_sim') }}
-        current_temperature: "{{ states('sensor.kitchen_temperature_sim') | float(none) }}"
-        target_temperature: "{{ states('input_number.kitchen_target_temperature_sim') | float(none) }}"
-        hvac_modes: "{{ ['off', 'heat'] }}"
-        hvac_mode: "{{ states('input_select.kitchen_hvac_mode_sim') }}"
-        hvac_action: >-
-          {% set current = states('sensor.kitchen_temperature_sim') | float(none) %}
-          {% set target = states('input_number.kitchen_target_temperature_sim') | float(none) %}
-          {% if is_state('input_select.kitchen_hvac_mode_sim', 'off') %}off
-          {% elif current is not none and target is not none and current < target %}heating
-          {% else %}idle{% endif %}
-        set_hvac_mode:
-          - action: input_select.select_option
-            target:
-              entity_id: input_select.kitchen_hvac_mode_sim
-            data:
-              option: "{{ hvac_mode }}"
-        set_temperature:
-          - action: input_number.set_value
-            target:
-              entity_id: input_number.kitchen_target_temperature_sim
-            data:
-              value: "{{ temperature | float }}"
-
+- sensor:
+  - name: Wohnzimmer Temperatur (Sim)
+    default_entity_id: sensor.living_room_temperature_sim
+    unique_id: pilot_living_room_temperature_sim
+    device_class: temperature
+    unit_of_measurement: °C
+    state_class: measurement
+    availability: '{{ has_value(''input_number.living_room_temperature_input_sim'') }}'
+    state: '{{ states(''input_number.living_room_temperature_input_sim'') | float(none) }}'
+  - name: Küche Temperatur (Sim)
+    default_entity_id: sensor.kitchen_temperature_sim
+    unique_id: pilot_kitchen_temperature_sim
+    device_class: temperature
+    unit_of_measurement: °C
+    state_class: measurement
+    availability: '{{ has_value(''input_number.kitchen_temperature_input_sim'') }}'
+    state: '{{ states(''input_number.kitchen_temperature_input_sim'') | float(none) }}'
+- light:
+  - name: Wohnzimmer Demolicht (Sim)
+    default_entity_id: light.living_room_demo_light_sim
+    unique_id: pilot_living_room_demo_light_sim
+    availability: "{{ has_value('input_boolean.living_room_demo_light_power_sim')\n   and has_value('input_number.living_room_demo_brightness_sim') }}"
+    state: '{{ is_state(''input_boolean.living_room_demo_light_power_sim'', ''on'') }}'
+    level: '{{ states(''input_number.living_room_demo_brightness_sim'') | int(153) }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.living_room_demo_light_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.living_room_demo_light_power_sim
+    set_level:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.living_room_demo_brightness_sim
+      data:
+        value: '{{ brightness | int }}'
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.living_room_demo_light_power_sim
+  - name: Wohnzimmer Bogenlampe (Sim)
+    default_entity_id: light.living_room_arc_lamp_sim
+    unique_id: pilot_living_room_arc_lamp_sim
+    availability: '{{ has_value(''input_boolean.living_room_arc_lamp_power_sim'') }}'
+    state: '{{ is_state(''input_boolean.living_room_arc_lamp_power_sim'', ''on'') }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.living_room_arc_lamp_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.living_room_arc_lamp_power_sim
+  - name: Hauseingang Außenbeleuchtung (Sim)
+    default_entity_id: light.entrance_outside_sim
+    unique_id: pilot_entrance_outside_sim
+    state: '{{ is_state(''input_boolean.entrance_outside_power_sim'', ''on'') }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.entrance_outside_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.entrance_outside_power_sim
+  - name: Küche Arbeitsfläche (Sim)
+    default_entity_id: light.kitchen_worktop_sim
+    unique_id: pilot_kitchen_worktop_sim
+    state: '{{ is_state(''input_boolean.kitchen_worktop_power_sim'', ''on'') }}'
+    level: '{{ states(''input_number.kitchen_worktop_brightness_sim'') | int(184) }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.kitchen_worktop_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.kitchen_worktop_power_sim
+    set_level:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.kitchen_worktop_brightness_sim
+      data:
+        value: '{{ brightness | int }}'
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.kitchen_worktop_power_sim
+  - name: Küche Kaffee-Ecke (Sim)
+    default_entity_id: light.kitchen_coffee_corner_sim
+    unique_id: pilot_kitchen_coffee_corner_sim
+    state: '{{ is_state(''input_boolean.kitchen_coffee_corner_power_sim'', ''on'') }}'
+    level: '{{ states(''input_number.kitchen_coffee_corner_brightness_sim'') | int(112) }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.kitchen_coffee_corner_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.kitchen_coffee_corner_power_sim
+    set_level:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.kitchen_coffee_corner_brightness_sim
+      data:
+        value: '{{ brightness | int }}'
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.kitchen_coffee_corner_power_sim
+  - name: Küche Essecke (Sim)
+    default_entity_id: light.kitchen_dining_corner_sim
+    unique_id: pilot_kitchen_dining_corner_sim
+    state: '{{ is_state(''input_boolean.kitchen_dining_corner_power_sim'', ''on'') }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.kitchen_dining_corner_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.kitchen_dining_corner_power_sim
+  - name: Küche Schwibbogen (Sim)
+    default_entity_id: light.kitchen_window_decoration_sim
+    unique_id: pilot_kitchen_window_decoration_sim
+    state: '{{ is_state(''input_boolean.kitchen_window_decoration_power_sim'', ''on'') }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.kitchen_window_decoration_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.kitchen_window_decoration_power_sim
+  - name: Gästebad Licht (Sim)
+    default_entity_id: light.guest_bathroom_ceiling_sim
+    unique_id: pilot_guest_bathroom_ceiling_sim
+    state: '{{ is_state(''input_boolean.guest_bathroom_ceiling_power_sim'', ''on'') }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.guest_bathroom_ceiling_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.guest_bathroom_ceiling_power_sim
+  - name: Hauswirtschaftsraum Licht (Sim)
+    default_entity_id: light.utility_room_ceiling_sim
+    unique_id: pilot_utility_room_ceiling_sim
+    state: '{{ is_state(''input_boolean.utility_room_ceiling_power_sim'', ''on'') }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.utility_room_ceiling_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.utility_room_ceiling_power_sim
+- climate:
+  - name: Wohnzimmer Heizung (Sim)
+    default_entity_id: climate.living_room_sim
+    unique_id: pilot_living_room_climate_sim
+    temperature_unit: °C
+    precision: 0.1
+    min_temperature: 16
+    max_temperature: 24
+    target_temperature_step: 0.5
+    availability: "{{ has_value('input_select.living_room_hvac_mode_sim')\n   and has_value('input_number.living_room_target_temperature_sim')\n   and has_value('sensor.living_room_temperature_sim') }}"
+    current_temperature: '{{ states(''sensor.living_room_temperature_sim'') | float(none) }}'
+    target_temperature: '{{ states(''input_number.living_room_target_temperature_sim'') | float(none) }}'
+    hvac_modes: '{{ [''off'', ''heat''] }}'
+    hvac_mode: '{{ states(''input_select.living_room_hvac_mode_sim'') }}'
+    hvac_action: '{% set current = states(''sensor.living_room_temperature_sim'') | float(none) %} {% set target = states(''input_number.living_room_target_temperature_sim'') | float(none) %} {% if is_state(''input_select.living_room_hvac_mode_sim'', ''off'') %}off {% elif current is not none and target is not none and current < target %}heating {% else %}idle{% endif %}'
+    set_hvac_mode:
+    - action: input_select.select_option
+      target:
+        entity_id: input_select.living_room_hvac_mode_sim
+      data:
+        option: '{{ hvac_mode }}'
+    set_temperature:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.living_room_target_temperature_sim
+      data:
+        value: '{{ temperature | float }}'
+  - name: Küche Heizung (Sim)
+    default_entity_id: climate.kitchen_sim
+    unique_id: pilot_kitchen_climate_sim
+    temperature_unit: °C
+    precision: 0.1
+    min_temperature: 16
+    max_temperature: 24
+    target_temperature_step: 0.5
+    availability: "{{ has_value('input_select.kitchen_hvac_mode_sim')\n   and has_value('input_number.kitchen_target_temperature_sim')\n   and has_value('sensor.kitchen_temperature_sim') }}"
+    current_temperature: '{{ states(''sensor.kitchen_temperature_sim'') | float(none) }}'
+    target_temperature: '{{ states(''input_number.kitchen_target_temperature_sim'') | float(none) }}'
+    hvac_modes: '{{ [''off'', ''heat''] }}'
+    hvac_mode: '{{ states(''input_select.kitchen_hvac_mode_sim'') }}'
+    hvac_action: '{% set current = states(''sensor.kitchen_temperature_sim'') | float(none) %} {% set target = states(''input_number.kitchen_target_temperature_sim'') | float(none) %} {% if is_state(''input_select.kitchen_hvac_mode_sim'', ''off'') %}off {% elif current is not none and target is not none and current < target %}heating {% else %}idle{% endif %}'
+    set_hvac_mode:
+    - action: input_select.select_option
+      target:
+        entity_id: input_select.kitchen_hvac_mode_sim
+      data:
+        option: '{{ hvac_mode }}'
+    set_temperature:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.kitchen_target_temperature_sim
+      data:
+        value: '{{ temperature | float }}'
 script:
   light_brightness_step_sim:
     alias: Lichthelligkeit schrittweise ändern (Sim)
@@ -355,63 +333,66 @@ script:
       step:
         required: true
     sequence:
-      - variables:
-          current_pct: >-
-            {{ ((state_attr(entity_id, 'brightness') | int(128)) * 100 / 255) | round(0) | int }}
-          target_pct: >-
-            {{ [100, [10, current_pct + (step | int)] | max] | min }}
-      - choose:
-          - conditions: "{{ (step | int) < 0 and is_state(entity_id, 'off') }}"
-            sequence:
-              - stop: Licht ist bereits aus
-          - conditions: "{{ (step | int) < 0 and (current_pct | int) <= 10 }}"
-            sequence:
-              - action: light.turn_off
-                target:
-                  entity_id: "{{ entity_id }}"
-        default:
-          - action: light.turn_on
-            target:
-              entity_id: "{{ entity_id }}"
-            data:
-              brightness_pct: "{{ target_pct }}"
-
+    - variables:
+        current_pct: '{{ ((state_attr(entity_id, ''brightness'') | int(128)) * 100 / 255) | round(0) | int }}'
+        target_pct: '{{ [100, [10, current_pct + (step | int)] | max] | min }}'
+    - choose:
+      - conditions: '{{ (step | int) > 0 and is_state(entity_id, ''off'') }}'
+        sequence:
+        - action: light.turn_on
+          target:
+            entity_id: '{{ entity_id }}'
+          data:
+            brightness_pct: 10
+        - stop: Licht wurde mit 10 Prozent eingeschaltet
+      - conditions: '{{ (step | int) < 0 and is_state(entity_id, ''off'') }}'
+        sequence:
+        - stop: Licht ist bereits aus
+      - conditions: '{{ (step | int) < 0 and (current_pct | int) <= 10 }}'
+        sequence:
+        - action: light.turn_off
+          target:
+            entity_id: '{{ entity_id }}'
+      default:
+      - action: light.turn_on
+        target:
+          entity_id: '{{ entity_id }}'
+        data:
+          brightness_pct: '{{ target_pct }}'
   dashboard_theme_toggle_sim:
     alias: Dashboard Theme umschalten (Sim)
     mode: restart
     sequence:
-      - variables:
-          next_mode: "{{ 'dark' if is_state('input_select.dashboard_theme_sim', 'light') else 'light' }}"
-      - action: frontend.set_theme
-        data:
-          name: "{{ 'Night Control Dark' if next_mode == 'dark' else 'Night Control Light' }}"
-          name_dark: "{{ 'Night Control Dark' if next_mode == 'dark' else 'Night Control Light' }}"
-      - action: input_select.select_option
-        target:
-          entity_id: input_select.dashboard_theme_sim
-        data:
-          option: "{{ next_mode }}"
-
+    - variables:
+        next_mode: '{{ ''dark'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''light'' }}'
+    - action: frontend.set_theme
+      data:
+        name: '{{ ''Night Control Dark'' if next_mode == ''dark'' else ''Night Control Light'' }}'
+        name_dark: '{{ ''Night Control Dark'' if next_mode == ''dark'' else ''Night Control Light'' }}'
+    - action: input_select.select_option
+      target:
+        entity_id: input_select.dashboard_theme_sim
+      data:
+        option: '{{ next_mode }}'
   living_room_heat_toggle_sim:
     alias: Wohnzimmer Heizung umschalten (Sim)
     mode: queued
     sequence:
-      - condition: template
-        value_template: "{{ states('climate.living_room_sim') in ['off', 'heat'] }}"
-      - action: climate.set_hvac_mode
-        target:
-          entity_id: climate.living_room_sim
-        data:
-          hvac_mode: "{{ 'off' if is_state('input_select.living_room_hvac_mode_sim', 'heat') else 'heat' }}"
-
+    - condition: template
+      value_template: '{{ states(''climate.living_room_sim'') in [''off'', ''heat''] }}'
+    - action: climate.set_hvac_mode
+      target:
+        entity_id: climate.living_room_sim
+      data:
+        hvac_mode: '{{ ''off'' if is_state(''input_select.living_room_hvac_mode_sim'', ''heat'') else ''heat'' }}'
   kitchen_heat_toggle_sim:
     alias: Küche Heizung umschalten (Sim)
     mode: queued
     sequence:
-      - condition: template
-        value_template: "{{ states('climate.kitchen_sim') in ['off', 'heat'] }}"
-      - action: climate.set_hvac_mode
-        target:
-          entity_id: climate.kitchen_sim
-        data:
-          hvac_mode: "{{ 'off' if is_state('input_select.kitchen_hvac_mode_sim', 'heat') else 'heat' }}"
+    - condition: template
+      value_template: '{{ states(''climate.kitchen_sim'') in [''off'', ''heat''] }}'
+    - action: climate.set_hvac_mode
+      target:
+        entity_id: climate.kitchen_sim
+      data:
+        hvac_mode: '{{ ''off'' if is_state(''input_select.kitchen_hvac_mode_sim'', ''heat'') else ''heat'' }}'

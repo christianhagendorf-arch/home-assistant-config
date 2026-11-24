@@ -36,3 +36,11 @@ Short working list for accepted design debt and later validation.
 - Recheck the unified 9 px icon radius across all card types.
 - Reassess floor-container versus room-card border weight with EG and OG available.
 - Confirm real roller-shutter capabilities and state handling before entity migration.
+
+
+## Patch 0022 validation
+
+- Verify OG hall climate footer and heating-state display.
+- Verify `hvac_action` states `off`, `idle`, and `heating` consistently across EG and OG.
+- Verify global dimmer behavior: off plus starts at 10 percent; icon toggle restores last brightness; 10 percent minus switches off.
+- Theme-switch diagnosis remains intentionally deferred. Existing Backend-selected and global/per-user/per-browser work items remain open.
