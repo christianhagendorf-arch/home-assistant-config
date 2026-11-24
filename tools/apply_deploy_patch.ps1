@@ -178,7 +178,8 @@ if (-not $Deploy) {
     exit 0
 }
 
-if ((Get-TrackedStatus).Count -gt 0) {
+$trackedStatus = @(Get-TrackedStatus)
+if ($trackedStatus.Count -gt 0) {
     throw 'Tracked working tree changes exist. Commit them before deployment.'
 }
 
