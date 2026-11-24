@@ -214,6 +214,7 @@ if (Test-Path -LiteralPath $archive) {
 $archiveFiles = @(
     'config/dashboards/living-room-pilot.yaml',
     'config/packages/ground_floor/pilot_living_room.yaml',
+    'config/packages/first_floor/pilot_first_floor.yaml',
     'config/themes/night_control_light.yaml',
     'config/themes/night_control_dark.yaml',
     'tools/deploy_ha_test.py'
