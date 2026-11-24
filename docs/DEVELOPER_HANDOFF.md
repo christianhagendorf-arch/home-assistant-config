@@ -1,5 +1,8 @@
 # Developer Handoff
 
+> **Operational update, 22 November 2026:** The active work branch is `feature/living-room-pilot`. Patch 0003 passed the recorded browser checks on `ha-test`. The current [deployment workflow](HA_TEST_DEPLOY.md) and [acceptance record](DASHBOARD_DECISIONS.md) supersede the implementation-status, tooling and deployment assumptions in this design handoff. The separate handover document contains the workstation and LAN details. No production deployment is in scope.
+
+
 **Project:** Home Assistant dashboard and configuration redesign  
 **Audience:** Additional Lovelace/YAML developer, including AI-assisted development with Claude or another coding assistant  
 **Current status:** HTML HMI prototype approved; documentation baseline prepared; Home Assistant YAML pilot not yet started  

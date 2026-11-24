@@ -1,0 +1,404 @@
+input_boolean:
+  first_floor_hall_sideboard_power_sim:
+    name: Flur OG Kommode Schalter (Sim)
+  office_work_light_power_sim:
+    name: Arbeitszimmer Arbeitslicht Schalter (Sim)
+  bedroom_main_power_sim:
+    name: Schlafzimmer Licht Schalter (Sim)
+  guest_room_table_lamp_power_sim:
+    name: Gästezimmer Tischlampe Schalter (Sim)
+input_number:
+  first_floor_hall_sideboard_brightness_sim:
+    min: 1
+    max: 255
+    step: 1
+    initial: 153
+  bedroom_main_brightness_sim:
+    min: 1
+    max: 255
+    step: 1
+    initial: 166
+  guest_room_table_lamp_brightness_sim:
+    min: 1
+    max: 255
+    step: 1
+    initial: 128
+  office_temperature_input_sim:
+    min: 10
+    max: 35
+    step: 0.1
+    initial: 20.7
+    unit_of_measurement: °C
+  office_target_temperature_sim:
+    min: 16
+    max: 24
+    step: 0.5
+    initial: 21
+    unit_of_measurement: °C
+  bedroom_temperature_input_sim:
+    min: 10
+    max: 35
+    step: 0.1
+    initial: 20.1
+    unit_of_measurement: °C
+  bedroom_target_temperature_sim:
+    min: 16
+    max: 24
+    step: 0.5
+    initial: 20.5
+    unit_of_measurement: °C
+  guest_room_temperature_input_sim:
+    min: 10
+    max: 35
+    step: 0.1
+    initial: 19.8
+    unit_of_measurement: °C
+  guest_room_target_temperature_sim:
+    min: 16
+    max: 24
+    step: 0.5
+    initial: 20
+    unit_of_measurement: °C
+  office_cover_position_sim:
+    min: 0
+    max: 100
+    step: 1
+    initial: 100
+  bedroom_cover_position_sim:
+    min: 0
+    max: 100
+    step: 1
+    initial: 60
+  first_floor_hall_temperature_input_sim:
+    name: Flur OG Istwert Vorgabe (Sim)
+    min: 10
+    max: 35
+    step: 0.1
+    initial: 20.4
+    unit_of_measurement: °C
+  first_floor_hall_target_temperature_sim:
+    name: Flur OG Sollwert (Sim)
+    min: 16
+    max: 24
+    step: 0.5
+    initial: 20.5
+    unit_of_measurement: °C
+input_select:
+  office_hvac_mode_sim:
+    options:
+    - 'off'
+    - heat
+    initial: heat
+  bedroom_hvac_mode_sim:
+    options:
+    - 'off'
+    - heat
+    initial: 'off'
+  guest_room_hvac_mode_sim:
+    options:
+    - 'off'
+    - heat
+    initial: heat
+  first_floor_hall_hvac_mode_sim:
+    name: Flur OG Heizmodus (Sim)
+    options:
+    - 'off'
+    - heat
+    initial: heat
+template:
+- sensor:
+  - name: Flur OG Temperatur (Sim)
+    default_entity_id: sensor.first_floor_hall_temperature_sim
+    unique_id: pilot_first_floor_hall_temperature_sim
+    device_class: temperature
+    unit_of_measurement: °C
+    state_class: measurement
+    state: '{{ states(''input_number.first_floor_hall_temperature_input_sim'') | float(none) }}'
+  - name: Arbeitszimmer Temperatur (Sim)
+    default_entity_id: sensor.office_temperature_sim
+    unique_id: pilot_office_temperature_sim
+    device_class: temperature
+    unit_of_measurement: °C
+    state_class: measurement
+    state: '{{ states(''input_number.office_temperature_input_sim'') | float(none) }}'
+  - name: Schlafzimmer Temperatur (Sim)
+    default_entity_id: sensor.bedroom_temperature_sim
+    unique_id: pilot_bedroom_temperature_sim
+    device_class: temperature
+    unit_of_measurement: °C
+    state_class: measurement
+    state: '{{ states(''input_number.bedroom_temperature_input_sim'') | float(none) }}'
+  - name: Gästezimmer Temperatur (Sim)
+    default_entity_id: sensor.guest_room_temperature_sim
+    unique_id: pilot_guest_room_temperature_sim
+    device_class: temperature
+    unit_of_measurement: °C
+    state_class: measurement
+    state: '{{ states(''input_number.guest_room_temperature_input_sim'') | float(none) }}'
+- light:
+  - name: Flur OG Kommode (Sim)
+    default_entity_id: light.first_floor_hall_sideboard_sim
+    unique_id: pilot_first_floor_hall_sideboard_sim
+    state: '{{ is_state(''input_boolean.first_floor_hall_sideboard_power_sim'', ''on'') }}'
+    level: '{{ states(''input_number.first_floor_hall_sideboard_brightness_sim'') | int(153) }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.first_floor_hall_sideboard_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.first_floor_hall_sideboard_power_sim
+    set_level:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.first_floor_hall_sideboard_brightness_sim
+      data:
+        value: '{{ brightness | int }}'
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.first_floor_hall_sideboard_power_sim
+  - name: Arbeitszimmer Arbeitslicht (Sim)
+    default_entity_id: light.office_work_light_sim
+    unique_id: pilot_office_work_light_sim
+    state: '{{ is_state(''input_boolean.office_work_light_power_sim'', ''on'') }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.office_work_light_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.office_work_light_power_sim
+  - name: Schlafzimmer Licht (Sim)
+    default_entity_id: light.bedroom_main_sim
+    unique_id: pilot_bedroom_main_sim
+    state: '{{ is_state(''input_boolean.bedroom_main_power_sim'', ''on'') }}'
+    level: '{{ states(''input_number.bedroom_main_brightness_sim'') | int(166) }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.bedroom_main_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.bedroom_main_power_sim
+    set_level:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.bedroom_main_brightness_sim
+      data:
+        value: '{{ brightness | int }}'
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.bedroom_main_power_sim
+  - name: Gästezimmer Tischlampe (Sim)
+    default_entity_id: light.guest_room_table_lamp_sim
+    unique_id: pilot_guest_room_table_lamp_sim
+    state: '{{ is_state(''input_boolean.guest_room_table_lamp_power_sim'', ''on'') }}'
+    level: '{{ states(''input_number.guest_room_table_lamp_brightness_sim'') | int(128) }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.guest_room_table_lamp_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.guest_room_table_lamp_power_sim
+    set_level:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.guest_room_table_lamp_brightness_sim
+      data:
+        value: '{{ brightness | int }}'
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.guest_room_table_lamp_power_sim
+- climate:
+  - name: Flur OG Heizung (Sim)
+    default_entity_id: climate.first_floor_hall_sim
+    unique_id: pilot_first_floor_hall_climate_sim
+    temperature_unit: °C
+    precision: 0.1
+    min_temperature: 16
+    max_temperature: 24
+    target_temperature_step: 0.5
+    current_temperature: '{{ states(''sensor.first_floor_hall_temperature_sim'') | float(none) }}'
+    target_temperature: '{{ states(''input_number.first_floor_hall_target_temperature_sim'') | float(none) }}'
+    hvac_modes: '{{ [''off'', ''heat''] }}'
+    hvac_mode: '{{ states(''input_select.first_floor_hall_hvac_mode_sim'') }}'
+    hvac_action: '{{ ''off'' if is_state(''input_select.first_floor_hall_hvac_mode_sim'', ''off'') else (''heating'' if states(''sensor.first_floor_hall_temperature_sim'') | float(0) < states(''input_number.first_floor_hall_target_temperature_sim'') | float(0) else ''idle'') }}'
+    set_hvac_mode:
+    - action: input_select.select_option
+      target:
+        entity_id: input_select.first_floor_hall_hvac_mode_sim
+      data:
+        option: '{{ hvac_mode }}'
+    set_temperature:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.first_floor_hall_target_temperature_sim
+      data:
+        value: '{{ temperature | float }}'
+  - name: Arbeitszimmer Heizung (Sim)
+    default_entity_id: climate.office_sim
+    unique_id: pilot_office_climate_sim
+    min_temperature: 16
+    max_temperature: 24
+    target_temperature_step: 0.5
+    current_temperature: '{{ states(''sensor.office_temperature_sim'') | float(none) }}'
+    target_temperature: '{{ states(''input_number.office_target_temperature_sim'') | float(none) }}'
+    hvac_modes: '{{ [''off'', ''heat''] }}'
+    hvac_mode: '{{ states(''input_select.office_hvac_mode_sim'') }}'
+    set_hvac_mode:
+    - action: input_select.select_option
+      target:
+        entity_id: input_select.office_hvac_mode_sim
+      data:
+        option: '{{ hvac_mode }}'
+    set_temperature:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.office_target_temperature_sim
+      data:
+        value: '{{ temperature | float }}'
+    temperature_unit: °C
+    precision: 0.1
+    hvac_action: '{{ ''off'' if is_state(''input_select.office_hvac_mode_sim'', ''off'') else (''heating'' if states(''sensor.office_temperature_sim'') | float(0) < states(''input_number.office_target_temperature_sim'') | float(0) else ''idle'') }}'
+  - name: Schlafzimmer Heizung (Sim)
+    default_entity_id: climate.bedroom_sim
+    unique_id: pilot_bedroom_climate_sim
+    min_temperature: 16
+    max_temperature: 24
+    target_temperature_step: 0.5
+    current_temperature: '{{ states(''sensor.bedroom_temperature_sim'') | float(none) }}'
+    target_temperature: '{{ states(''input_number.bedroom_target_temperature_sim'') | float(none) }}'
+    hvac_modes: '{{ [''off'', ''heat''] }}'
+    hvac_mode: '{{ states(''input_select.bedroom_hvac_mode_sim'') }}'
+    set_hvac_mode:
+    - action: input_select.select_option
+      target:
+        entity_id: input_select.bedroom_hvac_mode_sim
+      data:
+        option: '{{ hvac_mode }}'
+    set_temperature:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.bedroom_target_temperature_sim
+      data:
+        value: '{{ temperature | float }}'
+    temperature_unit: °C
+    precision: 0.1
+    hvac_action: '{{ ''off'' if is_state(''input_select.bedroom_hvac_mode_sim'', ''off'') else (''heating'' if states(''sensor.bedroom_temperature_sim'') | float(0) < states(''input_number.bedroom_target_temperature_sim'') | float(0) else ''idle'') }}'
+  - name: Gästezimmer Heizung (Sim)
+    default_entity_id: climate.guest_room_sim
+    unique_id: pilot_guest_room_climate_sim
+    min_temperature: 16
+    max_temperature: 24
+    target_temperature_step: 0.5
+    current_temperature: '{{ states(''sensor.guest_room_temperature_sim'') | float(none) }}'
+    target_temperature: '{{ states(''input_number.guest_room_target_temperature_sim'') | float(none) }}'
+    hvac_modes: '{{ [''off'', ''heat''] }}'
+    hvac_mode: '{{ states(''input_select.guest_room_hvac_mode_sim'') }}'
+    set_hvac_mode:
+    - action: input_select.select_option
+      target:
+        entity_id: input_select.guest_room_hvac_mode_sim
+      data:
+        option: '{{ hvac_mode }}'
+    set_temperature:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.guest_room_target_temperature_sim
+      data:
+        value: '{{ temperature | float }}'
+    temperature_unit: °C
+    precision: 0.1
+    hvac_action: '{{ ''off'' if is_state(''input_select.guest_room_hvac_mode_sim'', ''off'') else (''heating'' if states(''sensor.guest_room_temperature_sim'') | float(0) < states(''input_number.guest_room_target_temperature_sim'') | float(0) else ''idle'') }}'
+- cover:
+  - name: Arbeitszimmer Rollladen (Sim)
+    default_entity_id: cover.office_roller_shutter_sim
+    unique_id: pilot_office_cover_sim
+    position: '{{ states(''input_number.office_cover_position_sim'') | int(100) }}'
+    open_cover:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.office_cover_position_sim
+      data:
+        value: 100
+    close_cover:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.office_cover_position_sim
+      data:
+        value: 0
+    stop_cover:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.office_cover_position_sim
+      data:
+        value: '{{ states(''input_number.office_cover_position_sim'') | int(0) }}'
+    set_cover_position:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.office_cover_position_sim
+      data:
+        value: '{{ position }}'
+  - name: Schlafzimmer Rollladen (Sim)
+    default_entity_id: cover.bedroom_roller_shutter_sim
+    unique_id: pilot_bedroom_cover_sim
+    position: '{{ states(''input_number.bedroom_cover_position_sim'') | int(60) }}'
+    open_cover:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.bedroom_cover_position_sim
+      data:
+        value: 100
+    close_cover:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.bedroom_cover_position_sim
+      data:
+        value: 0
+    stop_cover:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.bedroom_cover_position_sim
+      data:
+        value: '{{ states(''input_number.bedroom_cover_position_sim'') | int(0) }}'
+    set_cover_position:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.bedroom_cover_position_sim
+      data:
+        value: '{{ position }}'
+script:
+  office_heat_toggle_sim:
+    sequence:
+    - action: climate.set_hvac_mode
+      target:
+        entity_id: climate.office_sim
+      data:
+        hvac_mode: '{{ ''off'' if is_state(''input_select.office_hvac_mode_sim'', ''heat'') else ''heat'' }}'
+  bedroom_heat_toggle_sim:
+    sequence:
+    - action: climate.set_hvac_mode
+      target:
+        entity_id: climate.bedroom_sim
+      data:
+        hvac_mode: '{{ ''off'' if is_state(''input_select.bedroom_hvac_mode_sim'', ''heat'') else ''heat'' }}'
+  guest_room_heat_toggle_sim:
+    sequence:
+    - action: climate.set_hvac_mode
+      target:
+        entity_id: climate.guest_room_sim
+      data:
+        hvac_mode: '{{ ''off'' if is_state(''input_select.guest_room_hvac_mode_sim'', ''heat'') else ''heat'' }}'
+  first_floor_hall_heat_toggle_sim:
+    alias: Flur OG Heizung umschalten (Sim)
+    sequence:
+    - action: climate.set_hvac_mode
+      target:
+        entity_id: climate.first_floor_hall_sim
+      data:
+        hvac_mode: '{{ ''off'' if is_state(''input_select.first_floor_hall_hvac_mode_sim'', ''heat'') else ''heat'' }}'

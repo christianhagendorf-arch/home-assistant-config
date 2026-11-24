@@ -32,7 +32,9 @@ __pycache__/
 *.py[cod]
 
 # Editor/OS
-.vscode/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
 .idea/
 .DS_Store
 Thumbs.db
@@ -44,3 +46,10 @@ www/community/
 *.tmp
 *.bak
 *.swp
+
+# Local patch workflow files
+/[0-9][0-9][0-9][0-9]-*.patch
+/[0-9][0-9][0-9][0-9]-*.md
+
+# Patch folder
+patches/

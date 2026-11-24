@@ -1,0 +1,327 @@
+input_boolean:
+  second_floor_hall_light_power_sim:
+    name: DG Flur Licht (Sim)
+  lotta_main_power_sim:
+    name: Lotta Deckenlicht (Sim)
+  lotta_aquarium_power_sim:
+    name: Lotta Aquarium (Sim)
+  lene_main_power_sim:
+    name: Lene Deckenlicht (Sim)
+input_number:
+  lotta_main_brightness_sim:
+    min: 1
+    max: 255
+    step: 1
+    initial: 153
+  lene_main_brightness_sim:
+    min: 1
+    max: 255
+    step: 1
+    initial: 140
+  second_floor_hall_temperature_input_sim:
+    min: 10
+    max: 35
+    step: 0.1
+    initial: 20.2
+    unit_of_measurement: °C
+  lotta_temperature_input_sim:
+    min: 10
+    max: 35
+    step: 0.1
+    initial: 20.6
+    unit_of_measurement: °C
+  lotta_target_temperature_sim:
+    min: 16
+    max: 24
+    step: 0.5
+    initial: 21
+    unit_of_measurement: °C
+  lene_temperature_input_sim:
+    min: 10
+    max: 35
+    step: 0.1
+    initial: 20.4
+    unit_of_measurement: °C
+  lene_target_temperature_sim:
+    min: 16
+    max: 24
+    step: 0.5
+    initial: 20.5
+    unit_of_measurement: °C
+  second_floor_bathroom_temperature_input_sim:
+    min: 10
+    max: 35
+    step: 0.1
+    initial: 21.0
+    unit_of_measurement: °C
+  second_floor_bathroom_target_temperature_sim:
+    min: 16
+    max: 24
+    step: 0.5
+    initial: 21
+    unit_of_measurement: °C
+  lotta_window_temperature_input_sim:
+    min: 5
+    max: 35
+    step: 0.1
+    initial: 15.5
+    unit_of_measurement: °C
+  lotta_window_target_temperature_sim:
+    min: 10
+    max: 24
+    step: 0.5
+    initial: 16
+    unit_of_measurement: °C
+input_select:
+  lotta_hvac_mode_sim:
+    options:
+    - 'off'
+    - heat
+    initial: heat
+  lene_hvac_mode_sim:
+    options:
+    - 'off'
+    - heat
+    initial: heat
+  second_floor_bathroom_hvac_mode_sim:
+    options:
+    - 'off'
+    - heat
+    initial: heat
+  lotta_window_heating_hvac_mode_sim:
+    options:
+    - 'off'
+    - heat
+    initial: 'off'
+template:
+- sensor:
+  - name: DG Flur Temperatur (Sim)
+    default_entity_id: sensor.second_floor_hall_temperature_sim
+    unique_id: pilot_second_floor_hall_temperature_sim
+    device_class: temperature
+    unit_of_measurement: °C
+    state_class: measurement
+    state: '{{ states(''input_number.second_floor_hall_temperature_input_sim'') | float(none) }}'
+  - name: Lotta Temperatur (Sim)
+    default_entity_id: sensor.lotta_temperature_sim
+    unique_id: pilot_lotta_temperature_sim
+    device_class: temperature
+    unit_of_measurement: °C
+    state_class: measurement
+    state: '{{ states(''input_number.lotta_temperature_input_sim'') | float(none) }}'
+  - name: Lene Temperatur (Sim)
+    default_entity_id: sensor.lene_temperature_sim
+    unique_id: pilot_lene_temperature_sim
+    device_class: temperature
+    unit_of_measurement: °C
+    state_class: measurement
+    state: '{{ states(''input_number.lene_temperature_input_sim'') | float(none) }}'
+  - name: DG Bad Temperatur (Sim)
+    default_entity_id: sensor.second_floor_bathroom_temperature_sim
+    unique_id: pilot_second_floor_bathroom_temperature_sim
+    device_class: temperature
+    unit_of_measurement: °C
+    state_class: measurement
+    state: '{{ states(''input_number.second_floor_bathroom_temperature_input_sim'') | float(none) }}'
+  - name: Lotta Fenster Temperatur (Sim)
+    default_entity_id: sensor.lotta_window_temperature_sim
+    unique_id: pilot_lotta_window_temperature_sim
+    device_class: temperature
+    unit_of_measurement: °C
+    state_class: measurement
+    state: '{{ states(''input_number.lotta_window_temperature_input_sim'') | float(none) }}'
+- light:
+  - name: DG Flur Licht (Sim)
+    default_entity_id: light.second_floor_hall_light_sim
+    unique_id: pilot_second_floor_hall_light_sim
+    state: '{{ is_state(''input_boolean.second_floor_hall_light_power_sim'', ''on'') }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.second_floor_hall_light_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.second_floor_hall_light_power_sim
+  - name: Lotta Deckenlicht (Sim)
+    default_entity_id: light.lotta_main_sim
+    unique_id: pilot_lotta_main_sim
+    state: '{{ is_state(''input_boolean.lotta_main_power_sim'', ''on'') }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.lotta_main_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.lotta_main_power_sim
+    level: '{{ states(''input_number.lotta_main_brightness_sim'') | int(153) }}'
+    set_level:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.lotta_main_brightness_sim
+      data:
+        value: '{{ brightness | int }}'
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.lotta_main_power_sim
+  - name: Lotta Aquarium (Sim)
+    default_entity_id: light.lotta_aquarium_sim
+    unique_id: pilot_lotta_aquarium_sim
+    state: '{{ is_state(''input_boolean.lotta_aquarium_power_sim'', ''on'') }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.lotta_aquarium_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.lotta_aquarium_power_sim
+  - name: Lene Deckenlicht (Sim)
+    default_entity_id: light.lene_main_sim
+    unique_id: pilot_lene_main_sim
+    state: '{{ is_state(''input_boolean.lene_main_power_sim'', ''on'') }}'
+    turn_on:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.lene_main_power_sim
+    turn_off:
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.lene_main_power_sim
+    level: '{{ states(''input_number.lene_main_brightness_sim'') | int(153) }}'
+    set_level:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.lene_main_brightness_sim
+      data:
+        value: '{{ brightness | int }}'
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.lene_main_power_sim
+- climate:
+  - name: Lotta Heizung (Sim)
+    default_entity_id: climate.lotta_sim
+    unique_id: pilot_lotta_climate_sim
+    temperature_unit: °C
+    min_temperature: 16
+    max_temperature: 24
+    target_temperature_step: 0.5
+    current_temperature: '{{ states(''sensor.lotta_temperature_sim'') | float(none) }}'
+    target_temperature: '{{ states(''input_number.lotta_target_temperature_sim'') | float(none) }}'
+    hvac_modes: '{{ [''off'', ''heat''] }}'
+    hvac_mode: '{{ states(''input_select.lotta_hvac_mode_sim'') }}'
+    hvac_action: '{{ ''off'' if is_state(''input_select.lotta_hvac_mode_sim'', ''off'') else (''heating'' if states(''sensor.lotta_temperature_sim'') | float(0) < states(''input_number.lotta_target_temperature_sim'') | float(0) else ''idle'') }}'
+    set_hvac_mode:
+    - action: input_select.select_option
+      target:
+        entity_id: input_select.lotta_hvac_mode_sim
+      data:
+        option: '{{ hvac_mode }}'
+    set_temperature:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.lotta_target_temperature_sim
+      data:
+        value: '{{ temperature | float }}'
+  - name: Lene Heizung (Sim)
+    default_entity_id: climate.lene_sim
+    unique_id: pilot_lene_climate_sim
+    temperature_unit: °C
+    min_temperature: 16
+    max_temperature: 24
+    target_temperature_step: 0.5
+    current_temperature: '{{ states(''sensor.lene_temperature_sim'') | float(none) }}'
+    target_temperature: '{{ states(''input_number.lene_target_temperature_sim'') | float(none) }}'
+    hvac_modes: '{{ [''off'', ''heat''] }}'
+    hvac_mode: '{{ states(''input_select.lene_hvac_mode_sim'') }}'
+    hvac_action: '{{ ''off'' if is_state(''input_select.lene_hvac_mode_sim'', ''off'') else (''heating'' if states(''sensor.lene_temperature_sim'') | float(0) < states(''input_number.lene_target_temperature_sim'') | float(0) else ''idle'') }}'
+    set_hvac_mode:
+    - action: input_select.select_option
+      target:
+        entity_id: input_select.lene_hvac_mode_sim
+      data:
+        option: '{{ hvac_mode }}'
+    set_temperature:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.lene_target_temperature_sim
+      data:
+        value: '{{ temperature | float }}'
+  - name: DG Bad Heizung (Sim)
+    default_entity_id: climate.second_floor_bathroom_sim
+    unique_id: pilot_second_floor_bathroom_climate_sim
+    temperature_unit: °C
+    min_temperature: 16
+    max_temperature: 24
+    target_temperature_step: 0.5
+    current_temperature: '{{ states(''sensor.second_floor_bathroom_temperature_sim'') | float(none) }}'
+    target_temperature: '{{ states(''input_number.second_floor_bathroom_target_temperature_sim'') | float(none) }}'
+    hvac_modes: '{{ [''off'', ''heat''] }}'
+    hvac_mode: '{{ states(''input_select.second_floor_bathroom_hvac_mode_sim'') }}'
+    hvac_action: '{{ ''off'' if is_state(''input_select.second_floor_bathroom_hvac_mode_sim'', ''off'') else (''heating'' if states(''sensor.second_floor_bathroom_temperature_sim'') | float(0) < states(''input_number.second_floor_bathroom_target_temperature_sim'') | float(0) else ''idle'') }}'
+    set_hvac_mode:
+    - action: input_select.select_option
+      target:
+        entity_id: input_select.second_floor_bathroom_hvac_mode_sim
+      data:
+        option: '{{ hvac_mode }}'
+    set_temperature:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.second_floor_bathroom_target_temperature_sim
+      data:
+        value: '{{ temperature | float }}'
+  - name: Lotta Fensterheizung (Sim)
+    default_entity_id: climate.lotta_window_heating_sim
+    unique_id: pilot_lotta_window_heating_sim
+    temperature_unit: °C
+    min_temperature: 10
+    max_temperature: 24
+    target_temperature_step: 0.5
+    current_temperature: '{{ states(''sensor.lotta_window_temperature_sim'') | float(none) }}'
+    target_temperature: '{{ states(''input_number.lotta_window_target_temperature_sim'') | float(none) }}'
+    hvac_modes: '{{ [''off'', ''heat''] }}'
+    hvac_mode: '{{ states(''input_select.lotta_window_heating_hvac_mode_sim'') }}'
+    hvac_action: '{{ ''off'' if is_state(''input_select.lotta_window_heating_hvac_mode_sim'', ''off'') else (''heating'' if states(''sensor.lotta_window_temperature_sim'') | float(0) < states(''input_number.lotta_window_target_temperature_sim'') | float(0) else ''idle'') }}'
+    set_hvac_mode:
+    - action: input_select.select_option
+      target:
+        entity_id: input_select.lotta_window_heating_hvac_mode_sim
+      data:
+        option: '{{ hvac_mode }}'
+    set_temperature:
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.lotta_window_target_temperature_sim
+      data:
+        value: '{{ temperature | float }}'
+script:
+  lotta_heat_toggle_sim:
+    sequence:
+    - action: climate.set_hvac_mode
+      target:
+        entity_id: climate.lotta_sim
+      data:
+        hvac_mode: '{{ ''off'' if is_state(''input_select.lotta_hvac_mode_sim'', ''heat'') else ''heat'' }}'
+  lene_heat_toggle_sim:
+    sequence:
+    - action: climate.set_hvac_mode
+      target:
+        entity_id: climate.lene_sim
+      data:
+        hvac_mode: '{{ ''off'' if is_state(''input_select.lene_hvac_mode_sim'', ''heat'') else ''heat'' }}'
+  second_floor_bathroom_heat_toggle_sim:
+    sequence:
+    - action: climate.set_hvac_mode
+      target:
+        entity_id: climate.second_floor_bathroom_sim
+      data:
+        hvac_mode: '{{ ''off'' if is_state(''input_select.second_floor_bathroom_hvac_mode_sim'', ''heat'') else ''heat'' }}'
+  lotta_window_heating_toggle_sim:
+    sequence:
+    - action: climate.set_hvac_mode
+      target:
+        entity_id: climate.lotta_window_heating_sim
+      data:
+        hvac_mode: '{{ ''off'' if is_state(''input_select.lotta_window_heating_hvac_mode_sim'', ''heat'') else ''heat'' }}'

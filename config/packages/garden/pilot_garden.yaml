@@ -1,0 +1,41 @@
+# Simulation only. No production entity references.
+input_boolean:
+  garden_terrace_power_sim: {name: Garten Terrassenlicht (Sim)}
+  garden_outdoor_power_sim: {name: Garten Außenbeleuchtung (Sim)}
+  playhouse_roof_power_sim: {name: Kinderhaus Dachbeleuchtung (Sim)}
+  playhouse_star_power_sim: {name: Kinderhaus Stern (Sim)}
+input_number:
+  playhouse_roof_brightness_sim: {min: 1, max: 255, step: 1, initial: 153}
+template:
+  - light:
+      - name: Garten Terrassenlicht (Sim)
+        default_entity_id: light.garden_terrace_sim
+        unique_id: pilot_garden_terrace_sim
+        state: "{{ is_state('input_boolean.garden_terrace_power_sim', 'on') }}"
+        turn_on: [{action: input_boolean.turn_on, target: {entity_id: input_boolean.garden_terrace_power_sim}}]
+        turn_off: [{action: input_boolean.turn_off, target: {entity_id: input_boolean.garden_terrace_power_sim}}]
+      - name: Garten Außenbeleuchtung (Sim)
+        default_entity_id: light.garden_outdoor_sim
+        unique_id: pilot_garden_outdoor_sim
+        state: "{{ is_state('input_boolean.garden_outdoor_power_sim', 'on') }}"
+        turn_on: [{action: input_boolean.turn_on, target: {entity_id: input_boolean.garden_outdoor_power_sim}}]
+        turn_off: [{action: input_boolean.turn_off, target: {entity_id: input_boolean.garden_outdoor_power_sim}}]
+      - name: Kinderhaus Dachbeleuchtung (Sim)
+        default_entity_id: light.playhouse_roof_sim
+        unique_id: pilot_playhouse_roof_sim
+        state: "{{ is_state('input_boolean.playhouse_roof_power_sim', 'on') }}"
+        level: "{{ states('input_number.playhouse_roof_brightness_sim') | int(153) }}"
+        turn_on: [{action: input_boolean.turn_on, target: {entity_id: input_boolean.playhouse_roof_power_sim}}]
+        turn_off: [{action: input_boolean.turn_off, target: {entity_id: input_boolean.playhouse_roof_power_sim}}]
+        set_level:
+          - action: input_number.set_value
+            target: {entity_id: input_number.playhouse_roof_brightness_sim}
+            data: {value: "{{ brightness | int }}"}
+          - action: input_boolean.turn_on
+            target: {entity_id: input_boolean.playhouse_roof_power_sim}
+      - name: Kinderhaus Stern (Sim)
+        default_entity_id: light.playhouse_star_sim
+        unique_id: pilot_playhouse_star_sim
+        state: "{{ is_state('input_boolean.playhouse_star_power_sim', 'on') }}"
+        turn_on: [{action: input_boolean.turn_on, target: {entity_id: input_boolean.playhouse_star_power_sim}}]
+        turn_off: [{action: input_boolean.turn_off, target: {entity_id: input_boolean.playhouse_star_power_sim}}]
