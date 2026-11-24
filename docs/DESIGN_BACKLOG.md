@@ -61,3 +61,12 @@ Short working list for accepted design debt and later validation.
 - Validate Lotta window heating as a separate climate footer with window icon, temperature, target, and `hvac_action`.
 - Validate Garden and Playhouse on the primary smartphone HMI.
 - Confirm centralized package lists keep export and deployment archives synchronized.
+
+
+## Patch 0025 full-house UI consolidation
+
+- Visible theme-switch chips were removed from EG, OG, DG, and Garden because the current control is not reliable and suggests a working action.
+- Keep `Night Control Light` and `Night Control Dark` available through the Home Assistant user profile.
+- Before restoring a visible switch, decide global versus per-user versus per-browser/device behavior and verify `frontend.set_theme` with profile overrides.
+- Recheck the two-level visual framing (floor container plus room borders) during final full-house acceptance; retain it unless mobile orientation suffers.
+- Function labels are room-local and concise: use `Licht` inside personal rooms and `Dachbeleuchtung` in Kinderhaus.

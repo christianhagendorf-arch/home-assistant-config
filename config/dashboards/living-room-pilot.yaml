@@ -6,18 +6,6 @@ views:
   sections:
   - type: grid
     cards:
-    - type: custom:mushroom-chips-card
-      alignment: end
-      chips:
-      - type: template
-        entity: input_select.dashboard_theme_sim
-        icon: '{{ ''mdi:weather-night'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''mdi:weather-sunny'' }}'
-        icon_color: '{{ ''indigo'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''amber'' }}'
-        tap_action:
-          action: perform-action
-          perform_action: script.dashboard_theme_toggle_sim
-      card_mod:
-        style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; padding: 0 4px !important; }'
     - type: custom:stack-in-card
       grid_options:
         columns: 12
@@ -408,18 +396,6 @@ views:
   sections:
   - type: grid
     cards:
-    - type: custom:mushroom-chips-card
-      alignment: end
-      chips:
-      - type: template
-        entity: input_select.dashboard_theme_sim
-        icon: '{{ ''mdi:weather-night'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''mdi:weather-sunny'' }}'
-        icon_color: '{{ ''indigo'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''amber'' }}'
-        tap_action:
-          action: perform-action
-          perform_action: script.dashboard_theme_toggle_sim
-      card_mod:
-        style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; padding: 0 4px !important; }'
     - type: custom:stack-in-card
       grid_options:
         columns: 12
@@ -524,7 +500,7 @@ views:
             style: 'ha-card { border: 0 !important; border-bottom: 1px solid var(--divider-color) !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; --card-primary-font-size: 13px; --card-primary-line-height: 17px; } mushroom-state-item { min-height: 28px; padding: 3px 10px 1px !important; }'
         - type: custom:mushroom-light-card
           entity: light.office_work_light_sim
-          name: Arbeitslicht
+          name: Licht
           icon: mdi:lightbulb-multiple-outline
           tap_action:
             action: toggle
@@ -618,7 +594,7 @@ views:
           cards:
           - type: custom:mushroom-template-card
             entity: light.bedroom_main_sim
-            primary: Schlafzimmerlicht
+            primary: Licht
             secondary: '{{ ''Aus'' if is_state(entity, ''off'') else ((state_attr(entity, ''brightness'') | int(0) * 100 / 255) | round(0) ~ '' %'') }}'
             icon: mdi:led-strip-variant
             icon_color: '{{ ''var(--state-light-active-color)'' if is_state(entity, ''on'') else ''grey'' }}'
@@ -800,18 +776,6 @@ views:
   sections:
   - type: grid
     cards:
-    - type: custom:mushroom-chips-card
-      alignment: end
-      chips:
-      - type: template
-        entity: input_select.dashboard_theme_sim
-        icon: '{{ ''mdi:weather-night'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''mdi:weather-sunny'' }}'
-        icon_color: '{{ ''indigo'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''amber'' }}'
-        tap_action:
-          action: perform-action
-          perform_action: script.dashboard_theme_toggle_sim
-      card_mod:
-        style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; padding: 0 4px !important; }'
     - type: custom:stack-in-card
       grid_options:
         columns: 12
@@ -879,7 +843,7 @@ views:
           cards:
           - type: custom:mushroom-template-card
             entity: light.lotta_main_sim
-            primary: Lottalicht
+            primary: Licht
             secondary: '{{ ''Aus'' if is_state(entity, ''off'') else ((state_attr(entity, ''brightness'') | int(0) * 100 / 255) | round(0) ~ '' %'') }}'
             icon: mdi:led-strip-variant
             icon_color: '{{ ''var(--state-light-active-color)'' if is_state(entity, ''on'') else ''grey'' }}'
@@ -993,7 +957,7 @@ views:
           cards:
           - type: custom:mushroom-template-card
             entity: light.lene_main_sim
-            primary: Lenelicht
+            primary: Licht
             secondary: '{{ ''Aus'' if is_state(entity, ''off'') else ((state_attr(entity, ''brightness'') | int(0) * 100 / 255) | round(0) ~ '' %'') }}'
             icon: mdi:led-strip-variant
             icon_color: '{{ ''var(--state-light-active-color)'' if is_state(entity, ''on'') else ''grey'' }}'
@@ -1097,18 +1061,6 @@ views:
   sections:
   - type: grid
     cards:
-    - type: custom:mushroom-chips-card
-      alignment: end
-      chips:
-      - type: template
-        entity: input_select.dashboard_theme_sim
-        icon: '{{ ''mdi:weather-night'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''mdi:weather-sunny'' }}'
-        icon_color: '{{ ''indigo'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''amber'' }}'
-        tap_action:
-          action: perform-action
-          perform_action: script.dashboard_theme_toggle_sim
-      card_mod:
-        style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; padding: 0 4px !important; }'
     - type: custom:stack-in-card
       grid_options:
         columns: 12
@@ -1173,7 +1125,7 @@ views:
           cards:
           - type: custom:mushroom-template-card
             entity: light.playhouse_roof_sim
-            primary: Lottalicht
+            primary: Dachbeleuchtung
             secondary: '{{ ''Aus'' if is_state(entity, ''off'') else ((state_attr(entity, ''brightness'') | int(0) * 100 / 255) | round(0) ~ '' %'') }}'
             icon: mdi:led-strip-variant
             icon_color: '{{ ''var(--state-light-active-color)'' if is_state(entity, ''on'') else ''grey'' }}'

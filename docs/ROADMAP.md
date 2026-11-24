@@ -11,7 +11,8 @@ Complete and accept the full simulated house HMI on `feature/living-room-pilot` 
 3. Implement and accept DG.
 4. Implement and accept Garden.
 5. Apply global design insights consistently to all views.
-6. Run smartphone full-house acceptance, desktop regression, Light/Dark, navigation, console, deployment, rollback, and source-export checks.
+6. Run smartphone full-house acceptance, desktop regression, manual Light/Dark theme checks, navigation, console, deployment, rollback, and source-export checks.
+7. Keep the visible theme switch out of the HMI until its scope and behavior are explicitly resolved.
 
 ## Merge baseline
 
