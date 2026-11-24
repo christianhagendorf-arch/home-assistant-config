@@ -44,3 +44,12 @@ Short working list for accepted design debt and later validation.
 - Verify `hvac_action` states `off`, `idle`, and `heating` consistently across EG and OG.
 - Verify global dimmer behavior: off plus starts at 10 percent; icon toggle restores last brightness; 10 percent minus switches off.
 - Theme-switch diagnosis remains intentionally deferred. Existing Backend-selected and global/per-user/per-browser work items remain open.
+
+
+## Second-floor implementation review
+
+- Validate DG smartphone layout for hall, Lotta, Lene, and bathroom.
+- Keep RGB color selection in More Info; main cards expose toggle and 10-percent brightness steps.
+- Validate Lotta window heating as a separate function before defining real control logic.
+- Confirm the temperature-only DG hall row remains understandable without climate control.
+- Confirm the DG bathroom remains clear with climate only and no other functions.

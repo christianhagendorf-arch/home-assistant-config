@@ -22,6 +22,7 @@ PAYLOAD = (
     Path('dashboards/living-room-pilot.yaml'),
     Path('packages/ground_floor/pilot_living_room.yaml'),
     Path('packages/first_floor/pilot_first_floor.yaml'),
+    Path('packages/second_floor/pilot_second_floor.yaml'),
     Path('themes/night_control_light.yaml'),
     Path('themes/night_control_dark.yaml'),
 )

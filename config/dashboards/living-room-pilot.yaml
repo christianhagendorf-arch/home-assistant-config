@@ -801,19 +801,279 @@ views:
   sections:
   - type: grid
     cards:
-    - *id001
-    - type: custom:stack-in-card
+    - type: custom:mushroom-chips-card
+      alignment: end
+      chips:
+      - type: template
+        entity: input_select.dashboard_theme_sim
+        icon: '{{ ''mdi:weather-night'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''mdi:weather-sunny'' }}'
+        icon_color: '{{ ''indigo'' if is_state(''input_select.dashboard_theme_sim'', ''light'') else ''amber'' }}'
+        tap_action:
+          action: perform-action
+          perform_action: script.dashboard_theme_toggle_sim
       card_mod:
-        style: 'ha-card { border: 1px solid var(--divider-color); border-top: 4px solid #8b5cf6; border-radius: 14px; box-shadow: none; }'
+        style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; padding: 0 4px !important; }'
+    - type: custom:stack-in-card
+      grid_options:
+        columns: 12
+      card_mod:
+        style: 'ha-card { border: 1px solid var(--divider-color); border-top: 4px solid #8b5cf6; border-radius: 14px; box-shadow: none; overflow: hidden; background: transparent; }'
       cards:
       - type: custom:mushroom-template-card
         primary: Dachgeschoss
-        secondary: Diese Ansicht wird in einem der nächsten Patches aufgebaut.
+        secondary: 4 Räume
         tap_action:
-          action: navigate
-          navigation_path: /living-room-pilot/overview
+          action: none
         card_mod:
-          style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+          style: 'ha-card { border: 0 !important; border-bottom: 1px solid var(--divider-color) !important; border-radius: 0 !important; box-shadow: none !important; background: rgba(139, 92, 246, 0.08) !important; --card-primary-font-size: 14px; --card-secondary-font-size: 10px; } mushroom-state-item { min-height: 40px; padding: 4px 10px !important; }'
+      - type: custom:stack-in-card
+        grid_options:
+          columns: 12
+        card_mod:
+          style: 'ha-card { border: 1px solid var(--divider-color); border-radius: 14px; box-shadow: none; overflow: hidden; --mush-icon-border-radius: 9px; --mush-control-border-radius: 9px; --mush-chip-border-radius: 9px; margin: 8px 8px 0; }'
+        cards:
+        - type: custom:mushroom-template-card
+          primary: Flur
+          tap_action:
+            action: none
+          card_mod:
+            style: 'ha-card { border: 0 !important; border-bottom: 1px solid var(--divider-color) !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; --card-primary-font-size: 13px; --card-primary-line-height: 17px; } mushroom-state-item { min-height: 28px; padding: 3px 10px 1px !important; }'
+        - type: custom:mushroom-light-card
+          entity: light.second_floor_hall_sim
+          name: Licht
+          icon: mdi:ceiling-light-outline
+          tap_action:
+            action: toggle
+          hold_action:
+            action: more-info
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+        - type: custom:stack-in-card
+          mode: horizontal
+          card_mod:
+            style: 'ha-card { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background: rgba(var(--rgb-primary-text-color), 0.035) !important; }'
+          cards:
+          - type: custom:mushroom-entity-card
+            entity: sensor.second_floor_hall_temperature_sim
+            icon: mdi:thermometer
+            layout: horizontal
+            primary_info: state
+            secondary_info: none
+            card_mod:
+              style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+      - type: custom:stack-in-card
+        grid_options:
+          columns: 12
+        card_mod:
+          style: 'ha-card { border: 1px solid var(--divider-color); border-radius: 14px; box-shadow: none; overflow: hidden; --mush-icon-border-radius: 9px; --mush-control-border-radius: 9px; --mush-chip-border-radius: 9px; margin: 8px 8px 0; }'
+        cards:
+        - type: custom:mushroom-template-card
+          primary: Lotta
+          tap_action:
+            action: none
+          card_mod:
+            style: 'ha-card { border: 0 !important; border-bottom: 1px solid var(--divider-color) !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; --card-primary-font-size: 13px; --card-primary-line-height: 17px; } mushroom-state-item { min-height: 28px; padding: 3px 10px 1px !important; }'
+        - type: custom:stack-in-card
+          mode: horizontal
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; min-height: 42px; }'
+          cards:
+          - type: custom:mushroom-template-card
+            entity: light.lotta_main_sim
+            primary: Lottalicht
+            secondary: '{{ ''Aus'' if is_state(entity, ''off'') else ((state_attr(entity, ''brightness'') | int(0) * 100 / 255) | round(0) ~ '' %'') }}'
+            icon: mdi:led-strip-variant
+            icon_color: '{{ ''var(--state-light-active-color)'' if is_state(entity, ''on'') else ''grey'' }}'
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            card_mod:
+              style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; min-width: 0; --card-primary-font-size: 13px; --card-secondary-font-size: 11px; } mushroom-state-item { min-height: 42px; }'
+          - type: custom:mushroom-chips-card
+            alignment: end
+            chips:
+            - type: template
+              icon: mdi:minus
+              tap_action:
+                action: perform-action
+                perform_action: script.light_brightness_step_sim
+                data:
+                  entity_id: light.lotta_main_sim
+                  step: -10
+            - type: template
+              icon: mdi:plus
+              tap_action:
+                action: perform-action
+                perform_action: script.light_brightness_step_sim
+                data:
+                  entity_id: light.lotta_main_sim
+                  step: 10
+            card_mod:
+              style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; padding: 6px 8px 0 0 !important; --chip-height: 28px; --chip-icon-size: 14px; --chip-border-radius: 6px; --chip-spacing: 3px; }'
+        - type: custom:mushroom-light-card
+          entity: light.lotta_aquarium_sim
+          name: Aquarium
+          icon: mdi:fishbowl-outline
+          tap_action:
+            action: toggle
+          hold_action:
+            action: more-info
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+        - type: custom:mushroom-entity-card
+          entity: input_boolean.lotta_window_heating_sim
+          name: Fensterheizung
+          icon: mdi:window-closed-variant
+          tap_action:
+            action: toggle
+          hold_action:
+            action: more-info
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+        - type: custom:stack-in-card
+          mode: horizontal
+          card_mod:
+            style: 'ha-card { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background: rgba(var(--rgb-primary-text-color), 0.035) !important; }'
+          cards:
+          - type: custom:mushroom-entity-card
+            entity: sensor.lotta_temperature_sim
+            icon: mdi:thermometer
+            layout: horizontal
+            primary_info: state
+            secondary_info: none
+            card_mod:
+              style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+          - type: custom:mushroom-climate-card
+            entity: climate.lotta_sim
+            layout: horizontal
+            icon: mdi:radiator
+            show_temperature_control: true
+            primary_info: none
+            secondary_info: none
+            tap_action:
+              action: perform-action
+              perform_action: script.lotta_heat_toggle_sim
+            hold_action:
+              action: more-info
+            card_mod:
+              style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+      - type: custom:stack-in-card
+        grid_options:
+          columns: 12
+        card_mod:
+          style: 'ha-card { border: 1px solid var(--divider-color); border-radius: 14px; box-shadow: none; overflow: hidden; --mush-icon-border-radius: 9px; --mush-control-border-radius: 9px; --mush-chip-border-radius: 9px; margin: 8px 8px 0; }'
+        cards:
+        - type: custom:mushroom-template-card
+          primary: Lene
+          tap_action:
+            action: none
+          card_mod:
+            style: 'ha-card { border: 0 !important; border-bottom: 1px solid var(--divider-color) !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; --card-primary-font-size: 13px; --card-primary-line-height: 17px; } mushroom-state-item { min-height: 28px; padding: 3px 10px 1px !important; }'
+        - type: custom:stack-in-card
+          mode: horizontal
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; min-height: 42px; }'
+          cards:
+          - type: custom:mushroom-template-card
+            entity: light.lene_main_sim
+            primary: Lenelicht
+            secondary: '{{ ''Aus'' if is_state(entity, ''off'') else ((state_attr(entity, ''brightness'') | int(0) * 100 / 255) | round(0) ~ '' %'') }}'
+            icon: mdi:led-strip-variant
+            icon_color: '{{ ''var(--state-light-active-color)'' if is_state(entity, ''on'') else ''grey'' }}'
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+            card_mod:
+              style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; min-width: 0; --card-primary-font-size: 13px; --card-secondary-font-size: 11px; } mushroom-state-item { min-height: 42px; }'
+          - type: custom:mushroom-chips-card
+            alignment: end
+            chips:
+            - type: template
+              icon: mdi:minus
+              tap_action:
+                action: perform-action
+                perform_action: script.light_brightness_step_sim
+                data:
+                  entity_id: light.lene_main_sim
+                  step: -10
+            - type: template
+              icon: mdi:plus
+              tap_action:
+                action: perform-action
+                perform_action: script.light_brightness_step_sim
+                data:
+                  entity_id: light.lene_main_sim
+                  step: 10
+            card_mod:
+              style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; padding: 6px 8px 0 0 !important; --chip-height: 28px; --chip-icon-size: 14px; --chip-border-radius: 6px; --chip-spacing: 3px; }'
+        - type: custom:stack-in-card
+          mode: horizontal
+          card_mod:
+            style: 'ha-card { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background: rgba(var(--rgb-primary-text-color), 0.035) !important; }'
+          cards:
+          - type: custom:mushroom-entity-card
+            entity: sensor.lene_temperature_sim
+            icon: mdi:thermometer
+            layout: horizontal
+            primary_info: state
+            secondary_info: none
+            card_mod:
+              style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+          - type: custom:mushroom-climate-card
+            entity: climate.lene_sim
+            layout: horizontal
+            icon: mdi:radiator
+            show_temperature_control: true
+            primary_info: none
+            secondary_info: none
+            tap_action:
+              action: perform-action
+              perform_action: script.lene_heat_toggle_sim
+            hold_action:
+              action: more-info
+            card_mod:
+              style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+      - type: custom:stack-in-card
+        grid_options:
+          columns: 12
+        card_mod:
+          style: 'ha-card { border: 1px solid var(--divider-color); border-radius: 14px; box-shadow: none; overflow: hidden; --mush-icon-border-radius: 9px; --mush-control-border-radius: 9px; --mush-chip-border-radius: 9px; margin: 8px; }'
+        cards:
+        - type: custom:mushroom-template-card
+          primary: Bad
+          tap_action:
+            action: none
+          card_mod:
+            style: 'ha-card { border: 0 !important; border-bottom: 1px solid var(--divider-color) !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; --card-primary-font-size: 13px; --card-primary-line-height: 17px; } mushroom-state-item { min-height: 28px; padding: 3px 10px 1px !important; }'
+        - type: custom:stack-in-card
+          mode: horizontal
+          card_mod:
+            style: 'ha-card { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background: rgba(var(--rgb-primary-text-color), 0.035) !important; }'
+          cards:
+          - type: custom:mushroom-entity-card
+            entity: sensor.second_floor_bathroom_temperature_sim
+            icon: mdi:thermometer
+            layout: horizontal
+            primary_info: state
+            secondary_info: none
+            card_mod:
+              style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+          - type: custom:mushroom-climate-card
+            entity: climate.second_floor_bathroom_sim
+            layout: horizontal
+            icon: mdi:radiator
+            show_temperature_control: true
+            primary_info: none
+            secondary_info: none
+            tap_action:
+              action: perform-action
+              perform_action: script.second_floor_bathroom_heat_toggle_sim
+            hold_action:
+              action: more-info
+            card_mod:
+              style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
 - title: Garten
   path: garden
   type: sections
