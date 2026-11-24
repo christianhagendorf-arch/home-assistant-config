@@ -27,9 +27,10 @@ param(
 )
 
 $PackageFiles = @(
-
-
-
+    'config/packages/ground_floor/pilot_living_room.yaml',
+    'config/packages/first_floor/pilot_first_floor.yaml',
+    'config/packages/second_floor/pilot_second_floor.yaml',
+    'config/packages/garden/pilot_garden.yaml'
 )
 
 Set-StrictMode -Version Latest
