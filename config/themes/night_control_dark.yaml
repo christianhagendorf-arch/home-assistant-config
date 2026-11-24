@@ -13,15 +13,15 @@ Night Control Dark:
       state-climate-heat-color: '#d9822b'
       ha-card-border-radius: 6px
       ha-card-box-shadow: none
-      mush-icon-border-radius: 6px
-      mush-control-border-radius: 6px
-      mush-chip-border-radius: 6px
+      mush-icon-border-radius: 9px
+      mush-control-border-radius: 9px
+      mush-chip-border-radius: 9px
       mush-spacing: 8px
       mush-card-primary-font-size: 13px
       mush-card-secondary-font-size: 11px
-      ha-badge-border-radius: 6px
-      ha-card-features-border-radius: 6px
-      ha-tile-icon-border-radius: 6px
+      ha-badge-border-radius: 9px
+      ha-card-features-border-radius: 9px
+      ha-tile-icon-border-radius: 9px
       mush-control-height: 34px
       mush-control-icon-size: 0.5em
       mush-control-spacing: 8px

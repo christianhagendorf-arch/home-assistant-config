@@ -29,3 +29,10 @@ Short working list for accepted design debt and later validation.
 
 - Compare More-Info Popup Card, Browser Mod, and Bubble Card when detail views are implemented.
 - Candidate detail functions: dimmer slider, RGB presets, HVAC modes, cover position, Lotta window heating, office pinboard/platform.
+
+## First-floor implementation review
+
+- Validate the new OG room pattern on the primary smartphone HMI before popup/detail work.
+- Recheck the unified 9 px icon radius across all card types.
+- Reassess floor-container versus room-card border weight with EG and OG available.
+- Confirm real roller-shutter capabilities and state handling before entity migration.
