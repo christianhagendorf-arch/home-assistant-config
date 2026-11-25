@@ -24,7 +24,10 @@ param(
         'docs/SIMULATION_BASELINE.md',
         'docs/PULL_REQUEST_SIMULATION_BASELINE.md',
         'docs/MERGE_CHECKLIST.md',
-        'docs/MQTT_READONLY_BASELINE.md'
+        'docs/MQTT_READONLY_BASELINE.md',
+        'docs/MQTT_INVENTORY.md',
+        'tools/configure_ha_test_firewall.sh',
+        'tools/ha-test-mqtt-firewall.service'
     ),
 
     [string]$Repository = 'D:\GitHub\home-assistant-config',

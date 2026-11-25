@@ -1,0 +1,15 @@
+[Unit]
+Description=Allow ha-test Home Assistant containers to reach production MQTT only
+After=docker.service network-online.target
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/configure-ha-test-firewall apply
+ExecStartPost=/usr/local/sbin/configure-ha-test-firewall check
+ExecStop=/usr/local/sbin/configure-ha-test-firewall remove
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -96,3 +96,12 @@ Short working list for accepted design debt and later validation.
 - Inventory MQTT topics and control ownership before real entity migration.
 - Define the production security migration later: external exposure, authentication, ACLs, TLS, Zigbee2MQTT, and Home Assistant clients.
 - Decide whether the temporary MQTT diagnosis view is removed or developed into a permanent technical view.
+
+## Patch 0028 infrastructure and inventory
+
+- Verify the MQTT firewall exception persists after a real `ha-test` host reboot.
+- Keep MQTT Discovery disabled and confirm no production devices return.
+- Investigate and document the origin of the pre-existing `DOCKER-USER` production-host block.
+- Treat the firewall exception as network reachability only, not as MQTT authorization.
+- Define Mosquitto authentication, ACL, TLS, external-exposure, and cutover design during the production-migration security phase.
+- Expand `docs/MQTT_INVENTORY.md` before introducing any writable MQTT entity.

@@ -46,3 +46,11 @@ Evaluate detail sliders, RGB presets, HVAC modes, cover position, Lotta window h
 ## MQTT read-only baseline
 
 Patch 0027 validates the broker, bridge, and two nearby temperature sensors without changing production or controlling devices. The first accepted data sources are Arbeitszimmer and Schlafzimmer temperature, battery, and linkquality. Broker hardening remains a separate production-migration security phase.
+
+## Patch 0028 infrastructure baseline
+
+- Persist only the narrow `ha-test` Docker-network exception to production MQTT TCP/1883.
+- Keep the existing block for every other port and protocol to `192.168.178.16`.
+- Maintain `docs/MQTT_INVENTORY.md` as the migration source of truth.
+- Do not harden or reconfigure production Mosquitto, Zigbee2MQTT, or production Home Assistant in this patch.
+- Continue read-only inventory before selecting any writable pilot entity.

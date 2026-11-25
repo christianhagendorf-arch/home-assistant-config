@@ -41,8 +41,12 @@ The existing simulated temperature and climate entities remain unchanged.
 
 ## MQTT integration rule
 
-The MQTT integration on `ha-test` must use `192.168.178.16:1883` with TLS off and empty username/password. MQTT Discovery must be disabled before the connection is accepted. If the setup flow does not offer a way to keep Discovery disabled before connecting, cancel setup and do not proceed.
+The MQTT integration on `ha-test` uses `192.168.178.16:1883` with TLS off and empty username/password. In the tested Home Assistant setup flow, Discovery could only be disabled after the first connection. The initial connection imported 32 devices and 135 entities from retained production discovery messages. Discovery was then disabled, all imported devices were deleted locally from `ha-test`, and a restart confirmed that they did not return. Discovery must remain disabled and the MQTT integration must contain no automatically discovered production devices.
 
 ## Physical test
 
 Warm each nearby Sonoff SNZB-02/TH01 sensor separately using a hand or warm breath. Allow 30 seconds to several minutes for a battery-powered device report. Confirm the related MQTT topic, Home Assistant entity, and MQTT diagnosis view all update without manual refresh.
+
+## Persistent ha-test network exception
+
+Patch 0028 installs an idempotent `systemd` service on `ha-test` that restores the narrow Docker-network exception to `192.168.178.16:1883/TCP` after reboot. The existing production-host DROP rule remains authoritative for all other traffic. See `docs/MQTT_INVENTORY.md`.
