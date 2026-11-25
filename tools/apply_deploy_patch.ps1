@@ -27,7 +27,9 @@ param(
         'docs/MQTT_READONLY_BASELINE.md',
         'docs/MQTT_INVENTORY.md',
         'tools/configure_ha_test_firewall.sh',
-        'tools/ha-test-mqtt-firewall.service'
+        'tools/ha-test-mqtt-firewall.service',
+        'tools/export_mqtt_inventory.py',
+        'docs/MQTT_DEVICE_INVENTORY.md'
     ),
 
     [string]$Repository = 'D:\GitHub\home-assistant-config',

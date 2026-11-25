@@ -54,3 +54,10 @@ Patch 0027 validates the broker, bridge, and two nearby temperature sensors with
 - Maintain `docs/MQTT_INVENTORY.md` as the migration source of truth.
 - Do not harden or reconfigure production Mosquitto, Zigbee2MQTT, or production Home Assistant in this patch.
 - Continue read-only inventory before selecting any writable pilot entity.
+
+## Patch 0029 inventory expansion
+
+- Capture Zigbee2MQTT bridge devices and retained Home Assistant discovery messages read-only.
+- Generate a redacted physical/logical device inventory in Markdown and CSV.
+- Review command-topic presence and assign migration ownership before selecting a writable pilot.
+- Do not add runtime entities, Discovery, broker changes, or device commands in this patch.

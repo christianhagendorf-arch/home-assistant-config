@@ -97,3 +97,7 @@ Before writable migration, inventory and assign control ownership for:
 - Zigbee2MQTT bridge and diagnostics
 
 For each item record: physical device, IEEE/MAC identifier, friendly name, state topic, command topic if any, availability topic, discovery unique ID, current production entity, retained-message behavior, and intended owner during migration.
+
+## Patch 0029 inventory workflow
+
+Use `tools/export_mqtt_inventory.py` with two read-only captures: `zigbee2mqtt/bridge/devices` and retained `homeassistant/#` discovery configurations. The generator does not connect to MQTT or publish messages. Generated Markdown and CSV must be reviewed before either is committed. Raw capture files remain outside Git under `patches/` and must not contain broker credentials or Zigbee network keys.

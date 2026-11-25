@@ -105,3 +105,10 @@ Short working list for accepted design debt and later validation.
 - Treat the firewall exception as network reachability only, not as MQTT authorization.
 - Define Mosquitto authentication, ACL, TLS, external-exposure, and cutover design during the production-migration security phase.
 - Expand `docs/MQTT_INVENTORY.md` before introducing any writable MQTT entity.
+
+## Patch 0029 MQTT inventory
+
+- Complete and review `docs/MQTT_DEVICE_INVENTORY.md` from read-only captures.
+- Resolve duplicate discovery records into physical-device ownership.
+- Identify one harmless first writable pilot only after command topics, production automations, retained behavior, and rollback are documented.
+- Keep raw capture files and generated CSV outside Git unless separately reviewed for sensitive content.
