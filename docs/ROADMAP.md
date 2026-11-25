@@ -42,3 +42,7 @@ Evaluate detail sliders, RGB presets, HVAC modes, cover position, Lotta window h
 - Patch 0026 adds the immutable baseline description, merge checklist, and pull-request template.
 - After the checklist is complete, merge `feature/living-room-pilot` to `main`.
 - Create `feature/mqtt-readonly-baseline` from updated `main`; never experiment with real MQTT or entity controls directly on `main`.
+
+## MQTT read-only baseline
+
+Patch 0027 validates the broker, bridge, and two nearby temperature sensors without changing production or controlling devices. The first accepted data sources are Arbeitszimmer and Schlafzimmer temperature, battery, and linkquality. Broker hardening remains a separate production-migration security phase.

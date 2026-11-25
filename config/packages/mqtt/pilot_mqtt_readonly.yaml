@@ -1,0 +1,115 @@
+# Read-only MQTT baseline for ha-test.
+# No writable MQTT functions, actuator entities, or automations are permitted here.
+mqtt:
+  binary_sensor:
+    - name: Zigbee2MQTT Bridge (Read-only)
+      default_entity_id: binary_sensor.zigbee2mqtt_bridge_readonly
+      unique_id: ha_test_zigbee2mqtt_bridge_readonly
+      state_topic: zigbee2mqtt/bridge/state
+      value_template: "{{ value_json.state }}"
+      payload_on: online
+      payload_off: offline
+      device_class: connectivity
+
+  sensor:
+    - name: Arbeitszimmer Temperatur MQTT
+      default_entity_id: sensor.office_temperature_mqtt
+      unique_id: ha_test_office_temperature_mqtt
+      state_topic: zigbee2mqtt/temp_arbeitszimmer
+      value_template: "{{ value_json.temperature | float(none) }}"
+      availability:
+        - topic: zigbee2mqtt/bridge/state
+          value_template: "{{ value_json.state }}"
+        - topic: zigbee2mqtt/temp_arbeitszimmer/availability
+          value_template: "{{ value_json.state }}"
+      availability_mode: all
+      payload_available: online
+      payload_not_available: offline
+      device_class: temperature
+      state_class: measurement
+      unit_of_measurement: "°C"
+
+    - name: Arbeitszimmer Batterie MQTT
+      default_entity_id: sensor.office_battery_mqtt
+      unique_id: ha_test_office_battery_mqtt
+      state_topic: zigbee2mqtt/temp_arbeitszimmer
+      value_template: "{{ value_json.battery | float(none) }}"
+      availability:
+        - topic: zigbee2mqtt/bridge/state
+          value_template: "{{ value_json.state }}"
+        - topic: zigbee2mqtt/temp_arbeitszimmer/availability
+          value_template: "{{ value_json.state }}"
+      availability_mode: all
+      payload_available: online
+      payload_not_available: offline
+      device_class: battery
+      state_class: measurement
+      unit_of_measurement: "%"
+      entity_category: diagnostic
+
+    - name: Arbeitszimmer Linkquality MQTT
+      default_entity_id: sensor.office_linkquality_mqtt
+      unique_id: ha_test_office_linkquality_mqtt
+      state_topic: zigbee2mqtt/temp_arbeitszimmer
+      value_template: "{{ value_json.linkquality | int(none) }}"
+      availability:
+        - topic: zigbee2mqtt/bridge/state
+          value_template: "{{ value_json.state }}"
+        - topic: zigbee2mqtt/temp_arbeitszimmer/availability
+          value_template: "{{ value_json.state }}"
+      availability_mode: all
+      payload_available: online
+      payload_not_available: offline
+      unit_of_measurement: lqi
+      entity_category: diagnostic
+
+    - name: Schlafzimmer Temperatur MQTT
+      default_entity_id: sensor.bedroom_temperature_mqtt
+      unique_id: ha_test_bedroom_temperature_mqtt
+      state_topic: zigbee2mqtt/temp_schlafzimmer
+      value_template: "{{ value_json.temperature | float(none) }}"
+      availability:
+        - topic: zigbee2mqtt/bridge/state
+          value_template: "{{ value_json.state }}"
+        - topic: zigbee2mqtt/temp_schlafzimmer/availability
+          value_template: "{{ value_json.state }}"
+      availability_mode: all
+      payload_available: online
+      payload_not_available: offline
+      device_class: temperature
+      state_class: measurement
+      unit_of_measurement: "°C"
+
+    - name: Schlafzimmer Batterie MQTT
+      default_entity_id: sensor.bedroom_battery_mqtt
+      unique_id: ha_test_bedroom_battery_mqtt
+      state_topic: zigbee2mqtt/temp_schlafzimmer
+      value_template: "{{ value_json.battery | float(none) }}"
+      availability:
+        - topic: zigbee2mqtt/bridge/state
+          value_template: "{{ value_json.state }}"
+        - topic: zigbee2mqtt/temp_schlafzimmer/availability
+          value_template: "{{ value_json.state }}"
+      availability_mode: all
+      payload_available: online
+      payload_not_available: offline
+      device_class: battery
+      state_class: measurement
+      unit_of_measurement: "%"
+      entity_category: diagnostic
+
+    - name: Schlafzimmer Linkquality MQTT
+      default_entity_id: sensor.bedroom_linkquality_mqtt
+      unique_id: ha_test_bedroom_linkquality_mqtt
+      state_topic: zigbee2mqtt/temp_schlafzimmer
+      value_template: "{{ value_json.linkquality | int(none) }}"
+      availability:
+        - topic: zigbee2mqtt/bridge/state
+          value_template: "{{ value_json.state }}"
+        - topic: zigbee2mqtt/temp_schlafzimmer/availability
+          value_template: "{{ value_json.state }}"
+      availability_mode: all
+      payload_available: online
+      payload_not_available: offline
+      unit_of_measurement: lqi
+      entity_category: diagnostic

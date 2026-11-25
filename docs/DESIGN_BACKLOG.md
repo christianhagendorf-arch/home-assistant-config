@@ -88,3 +88,11 @@ Short working list for accepted design debt and later validation.
 - document living-room/kitchen floor-heating actuators and circulation-pump rules
 - validate washer/dryer fast-restart automation before adding a reset control
 - inventory MQTT topics and control ownership
+
+## MQTT read-only baseline
+
+- Keep `ha-test` MQTT Discovery disabled while it shares the production broker.
+- Do not publish or add actuator entities during the read-only baseline.
+- Inventory MQTT topics and control ownership before real entity migration.
+- Define the production security migration later: external exposure, authentication, ACLs, TLS, Zigbee2MQTT, and Home Assistant clients.
+- Decide whether the temporary MQTT diagnosis view is removed or developed into a permanent technical view.

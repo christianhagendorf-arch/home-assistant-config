@@ -1166,3 +1166,116 @@ views:
             action: more-info
           card_mod:
             style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+- title: MQTT
+  path: mqtt_readonly
+  type: sections
+  max_columns: 1
+  icon: mdi:lan-connect
+  sections:
+  - type: grid
+    cards:
+    - type: custom:stack-in-card
+      grid_options:
+        columns: 12
+      card_mod:
+        style: 'ha-card { border: 1px solid var(--divider-color); border-top: 4px solid #64748b; border-radius: 14px; box-shadow: none; overflow: hidden; background: transparent; }'
+      cards:
+      - type: custom:mushroom-template-card
+        primary: MQTT Read-only
+        secondary: Diagnose ohne Steuerung
+        tap_action:
+          action: none
+        card_mod:
+          style: 'ha-card { border: 0 !important; border-bottom: 1px solid var(--divider-color) !important; border-radius: 0 !important; box-shadow: none !important; background: rgba(100, 116, 139, 0.08) !important; --card-primary-font-size: 14px; --card-secondary-font-size: 10px; } mushroom-state-item { min-height: 40px; padding: 4px 10px !important; }'
+      - type: custom:stack-in-card
+        grid_options:
+          columns: 12
+        card_mod:
+          style: 'ha-card { border: 1px solid var(--divider-color); border-radius: 14px; box-shadow: none; overflow: hidden; --mush-icon-border-radius: 9px; margin: 8px 8px 0; }'
+        cards:
+        - type: custom:mushroom-template-card
+          primary: Broker
+          tap_action:
+            action: none
+          card_mod:
+            style: 'ha-card { border: 0 !important; border-bottom: 1px solid var(--divider-color) !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; --card-primary-font-size: 13px; } mushroom-state-item { min-height: 28px; padding: 3px 10px 1px !important; }'
+        - type: custom:mushroom-entity-card
+          entity: binary_sensor.zigbee2mqtt_bridge_readonly
+          name: Zigbee2MQTT Bridge
+          icon: mdi:access-point-network
+          tap_action:
+            action: more-info
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+      - type: custom:stack-in-card
+        grid_options:
+          columns: 12
+        card_mod:
+          style: 'ha-card { border: 1px solid var(--divider-color); border-radius: 14px; box-shadow: none; overflow: hidden; --mush-icon-border-radius: 9px; margin: 8px 8px 0; }'
+        cards:
+        - type: custom:mushroom-template-card
+          primary: Arbeitszimmer
+          tap_action:
+            action: none
+          card_mod:
+            style: 'ha-card { border: 0 !important; border-bottom: 1px solid var(--divider-color) !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; --card-primary-font-size: 13px; } mushroom-state-item { min-height: 28px; padding: 3px 10px 1px !important; }'
+        - type: custom:mushroom-entity-card
+          entity: sensor.office_temperature_mqtt
+          name: Temperatur
+          icon: mdi:thermometer
+          tap_action:
+            action: more-info
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+        - type: custom:mushroom-entity-card
+          entity: sensor.office_battery_mqtt
+          name: Batterie
+          icon: mdi:battery
+          tap_action:
+            action: more-info
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+        - type: custom:mushroom-entity-card
+          entity: sensor.office_linkquality_mqtt
+          name: Linkquality
+          icon: mdi:signal
+          tap_action:
+            action: more-info
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+      - type: custom:stack-in-card
+        grid_options:
+          columns: 12
+        card_mod:
+          style: 'ha-card { border: 1px solid var(--divider-color); border-radius: 14px; box-shadow: none; overflow: hidden; --mush-icon-border-radius: 9px; margin: 8px; }'
+        cards:
+        - type: custom:mushroom-template-card
+          primary: Schlafzimmer
+          tap_action:
+            action: none
+          card_mod:
+            style: 'ha-card { border: 0 !important; border-bottom: 1px solid var(--divider-color) !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; --card-primary-font-size: 13px; } mushroom-state-item { min-height: 28px; padding: 3px 10px 1px !important; }'
+        - type: custom:mushroom-entity-card
+          entity: sensor.bedroom_temperature_mqtt
+          name: Temperatur
+          icon: mdi:thermometer
+          tap_action:
+            action: more-info
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+        - type: custom:mushroom-entity-card
+          entity: sensor.bedroom_battery_mqtt
+          name: Batterie
+          icon: mdi:battery
+          tap_action:
+            action: more-info
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
+        - type: custom:mushroom-entity-card
+          entity: sensor.bedroom_linkquality_mqtt
+          name: Linkquality
+          icon: mdi:signal
+          tap_action:
+            action: more-info
+          card_mod:
+            style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'

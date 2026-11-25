@@ -23,7 +23,9 @@ param(
         'docs/ROADMAP.md',
         'docs/SIMULATION_BASELINE.md',
         'docs/PULL_REQUEST_SIMULATION_BASELINE.md',
-        'docs/MERGE_CHECKLIST.md'    ),
+        'docs/MERGE_CHECKLIST.md',
+        'docs/MQTT_READONLY_BASELINE.md'
+    ),
 
     [string]$Repository = 'D:\GitHub\home-assistant-config',
     [string]$Target = 'ha-test'
@@ -33,7 +35,8 @@ $PackageFiles = @(
     'config/packages/ground_floor/pilot_living_room.yaml',
     'config/packages/first_floor/pilot_first_floor.yaml',
     'config/packages/second_floor/pilot_second_floor.yaml',
-    'config/packages/garden/pilot_garden.yaml'
+    'config/packages/garden/pilot_garden.yaml',
+    'config/packages/mqtt/pilot_mqtt_readonly.yaml'
 )
 
 Set-StrictMode -Version Latest
