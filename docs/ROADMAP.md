@@ -74,3 +74,10 @@ Patch 0027 validates the broker, bridge, and two nearby temperature sensors with
 - Add `docs/MQTT_MIGRATION_PLAN.md` with entry gates, candidate classes, exclusions, and evidence required for the first writable pilot.
 - Do not publish MQTT commands or change runtime configuration in Patch 0031.
 - Implement one writable pilot in the next patch only after physical mapping, production ownership, retained behavior, and rollback are complete.
+
+## Patch 0032 level taxonomy and room migration foundation
+- Replace package directories `ground_floor`, `first_floor`, and `second_floor` with `l0`, `l1`, and `l2`.
+- Replace technical dashboard paths with `l0`, `l1`, and `l2` while keeping the visible titles `EG`, `OG`, and `DG`.
+- Establish English code naming and room-by-room migration without separate room documents.
+- Preserve existing entity IDs to avoid unrelated breaking changes.
+- Continue Patch 0032 with the office room migration only after the remaining room inventory and automation review is complete.

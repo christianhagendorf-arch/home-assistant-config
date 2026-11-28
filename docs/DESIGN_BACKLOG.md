@@ -125,3 +125,11 @@ Short working list for accepted design debt and later validation.
 - Inventory all production automations, scripts, scenes, and start-up publications that can command the candidate.
 - Define one authoritative controller during the pilot and a rollback that does not replay a retained command.
 - Exclude heating, covers, security, networking, refrigeration, aquarium life support, and unattended appliances from the first writable pilot.
+
+## Office room migration preparation
+- Preserve the physical multi-toggle behavior: one ON selects office lights, two ON selections select bedroom light, three ON selections select both; a sustained OFF switches all three lights off.
+- Replace the current competing automations and dynamic service call with one deterministic, English-named state machine.
+- Add a short OFF debounce so intermediate OFF transitions do not cycle the lamps; tune the initial value in the 500-700 ms range during attended testing.
+- Treat `switch.sonoff_4` as office pinboard light, `light.led_ww_1` as dimmable office platform light, and `light.led_rgbw_4` as bedroom light.
+- Keep office heating and shutter control read-only in the initial room migration.
+- Retain Overkiz cloud integration for the Connectivity Kit / TaHoma mini until official local API support for the exact gateway is confirmed.

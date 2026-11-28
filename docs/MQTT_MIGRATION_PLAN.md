@@ -61,3 +61,17 @@ Rollback steps:
 ## Exit to the next patch
 
 The next regular patch should implement exactly one writable pilot only after the evidence template is complete. If the evidence is incomplete, the next patch remains an inventory/ownership clarification patch rather than a control patch.
+
+## Room-by-room migration
+
+Migration is planned and accepted by room. Each room patch covers physical device mapping, entities, dashboard behavior, local controls, automations, scripts, scenes, failure behavior, rollback, and updates to the existing inventory and planning documents. No separate per-room documentation files are created. House-wide functions remain explicit shared dependencies and may require a later system patch.
+
+## Technical naming convention
+
+- Code, identifiers, aliases, comments, file names, and directory names use English.
+- User-facing HMI text uses German; established contemporary English HMI terms are acceptable.
+- Technical levels are `l0`, `l1`, and `l2`; the HMI labels remain `EG`, `OG`, and `DG`.
+- `garden` is retained for the outdoor area and `shared` is reserved for genuinely house-wide logic.
+- Room entities normally use the English room name without a level prefix, for example `sensor.office_temperature`.
+- Level prefixes are used for level-wide behavior, for example `script.l2_lights_off`.
+- Existing entity IDs are not renamed solely for taxonomy. Entity renames require a compatibility and reference review in the room patch that owns the entity.

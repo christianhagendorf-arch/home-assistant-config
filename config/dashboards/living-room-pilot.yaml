@@ -1,6 +1,6 @@
 views:
 - title: EG
-  path: ground_floor
+  path: l0
   type: sections
   max_columns: 1
   sections:
@@ -390,7 +390,7 @@ views:
             card_mod:
               style: "ha-card {\n  border: 0 !important;\n  box-shadow: none !important;\n  background: transparent !important;\n}\n"
 - title: OG
-  path: first_floor
+  path: l1
   type: sections
   max_columns: 1
   sections:
@@ -770,7 +770,7 @@ views:
             card_mod:
               style: 'ha-card { border: 0 !important; box-shadow: none !important; background: transparent !important; }'
 - title: DG
-  path: second_floor
+  path: l2
   type: sections
   max_columns: 1
   sections:
