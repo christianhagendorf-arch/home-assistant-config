@@ -18,8 +18,8 @@ Physical/logical device records: **33**
 - Command topics: `zigbee2mqtt/thermostat_arbeitszimmer/set/child_lock; zigbee2mqtt/thermostat_arbeitszimmer/set/current_heating_setpoint; zigbee2mqtt/thermostat_arbeitszimmer/set/system_mode; zigbee2mqtt/thermostat_arbeitszimmer/set/valve_detection; zigbee2mqtt/thermostat_arbeitszimmer/set/window_detection`
 - Production entities: `climate.thermostat_arbeitszimmer; sensor.thermostat_arbeitszimmer_battery; sensor.thermostat_arbeitszimmer_last_seen; sensor.thermostat_arbeitszimmer_linkquality; switch.thermostat_arbeitszimmer_child_lock; switch.thermostat_arbeitszimmer_valve_detection; switch.thermostat_arbeitszimmer_window_detection`
 - Migration owner: production
-- ha-test status: inventory only
-- Review notes:
+- ha-test status: read-only telemetry in office HMI
+- Review notes: Office radiator thermostat; production retains all write ownership.
 
 ### thermostat_bad_dg
 
@@ -262,8 +262,8 @@ Physical/logical device records: **33**
 - Command topics: `zigbee2mqtt/sonoff_minizb_3_arbeitszimmer/set`
 - Production entities: `sensor.sonoff_minizb_3_arbeitszimmer_last_seen; sensor.sonoff_minizb_3_arbeitszimmer_linkquality; switch.sonoff_minizb_3_arbeitszimmer`
 - Migration owner: production
-- ha-test status: inventory only
-- Review notes:
+- ha-test status: production-owned physical input
+- Review notes: Classic latching wall switch on S1/S2; drives the production office/bedroom multi-toggle automation.
 
 ### sonoff_zbminir2_dg1
 
@@ -306,8 +306,8 @@ Physical/logical device records: **33**
 - Command topics: `none found`
 - Production entities: `sensor.temp_arbeitszimmer_battery; sensor.temp_arbeitszimmer_humidity; sensor.temp_arbeitszimmer_last_seen; sensor.temp_arbeitszimmer_linkquality; sensor.temp_arbeitszimmer_temperature; sensor.temp_arbeitszimmer_voltage`
 - Migration owner: production
-- ha-test status: inventory only
-- Review notes:
+- ha-test status: read-only office HMI
+- Review notes: Located at the office pinboard; authoritative office temperature and humidity source.
 
 ### temp_bastelzimmer
 

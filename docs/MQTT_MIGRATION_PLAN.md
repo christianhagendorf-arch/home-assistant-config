@@ -75,3 +75,5 @@ Migration is planned and accepted by room. Each room patch covers physical devic
 - Room entities normally use the English room name without a level prefix, for example `sensor.office_temperature`.
 - Level prefixes are used for level-wide behavior, for example `script.l2_lights_off`.
 - Existing entity IDs are not renamed solely for taxonomy. Entity renames require a compatibility and reference review in the room patch that owns the entity.
+## Patch 0033 office operating boundary
+Patch 0033 allows manual control of the office pinboard and platform lights from `ha-test`, but does not migrate the physical wall-switch sequence. Production remains authoritative for that automation until a separate, attended cutover. Commands are never retained or queued for replay. Heating and shutter data are display-only.

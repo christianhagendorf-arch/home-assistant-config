@@ -1,0 +1,120 @@
+mqtt:
+  switch:
+    - name: Office pinboard light
+      default_entity_id: switch.office_pinboard_light
+      unique_id: ha_test_office_pinboard_light
+      command_topic: sonoff-4/cmnd/POWER
+      state_topic: sonoff-4/stat/POWER
+      payload_on: "ON"
+      payload_off: "OFF"
+      state_on: "ON"
+      state_off: "OFF"
+      retain: false
+
+  light:
+    - name: Office platform light
+      default_entity_id: light.office_platform_light
+      unique_id: ha_test_office_platform_light
+      command_topic: led-ww-1/cmnd/POWER
+      state_topic: led-ww-1/stat/POWER
+      payload_on: "ON"
+      payload_off: "OFF"
+      state_value_template: "{{ value }}"
+      brightness_command_topic: led-ww-1/cmnd/Dimmer
+      brightness_state_topic: led-ww-1/stat/RESULT
+      brightness_value_template: "{{ value_json.Dimmer | int(0) }}"
+      brightness_scale: 100
+      on_command_type: first
+      retain: false
+
+  sensor:
+    - name: Office humidity MQTT
+      default_entity_id: sensor.office_humidity_mqtt
+      unique_id: ha_test_office_humidity_mqtt
+      state_topic: zigbee2mqtt/temp_arbeitszimmer
+      value_template: "{{ value_json.humidity | float(none) }}"
+      availability:
+        - topic: zigbee2mqtt/bridge/state
+          value_template: "{{ value_json.state }}"
+        - topic: zigbee2mqtt/temp_arbeitszimmer/availability
+          value_template: "{{ value_json.state }}"
+      availability_mode: all
+      payload_available: online
+      payload_not_available: offline
+      device_class: humidity
+      state_class: measurement
+      unit_of_measurement: "%"
+
+    - name: Office heating setpoint MQTT
+      default_entity_id: sensor.office_heating_setpoint_mqtt
+      unique_id: ha_test_office_heating_setpoint_mqtt
+      state_topic: zigbee2mqtt/thermostat_arbeitszimmer
+      value_template: "{{ value_json.current_heating_setpoint | float(none) }}"
+      availability:
+        - topic: zigbee2mqtt/bridge/state
+          value_template: "{{ value_json.state }}"
+        - topic: zigbee2mqtt/thermostat_arbeitszimmer/availability
+          value_template: "{{ value_json.state }}"
+      availability_mode: all
+      payload_available: online
+      payload_not_available: offline
+      device_class: temperature
+      state_class: measurement
+      unit_of_measurement: "°C"
+
+    - name: Office heating mode MQTT
+      default_entity_id: sensor.office_heating_mode_mqtt
+      unique_id: ha_test_office_heating_mode_mqtt
+      state_topic: zigbee2mqtt/thermostat_arbeitszimmer
+      value_template: "{{ value_json.system_mode | default('unknown', true) }}"
+      availability:
+        - topic: zigbee2mqtt/bridge/state
+          value_template: "{{ value_json.state }}"
+        - topic: zigbee2mqtt/thermostat_arbeitszimmer/availability
+          value_template: "{{ value_json.state }}"
+      availability_mode: all
+      payload_available: online
+      payload_not_available: offline
+
+    - name: Office thermostat battery MQTT
+      default_entity_id: sensor.office_thermostat_battery_mqtt
+      unique_id: ha_test_office_thermostat_battery_mqtt
+      state_topic: zigbee2mqtt/thermostat_arbeitszimmer
+      value_template: "{{ value_json.battery | float(none) }}"
+      availability:
+        - topic: zigbee2mqtt/bridge/state
+          value_template: "{{ value_json.state }}"
+        - topic: zigbee2mqtt/thermostat_arbeitszimmer/availability
+          value_template: "{{ value_json.state }}"
+      availability_mode: all
+      payload_available: online
+      payload_not_available: offline
+      device_class: battery
+      state_class: measurement
+      unit_of_measurement: "%"
+      entity_category: diagnostic
+
+script:
+  office_lights_on:
+    alias: Office lights on
+    mode: restart
+    sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.office_pinboard_light
+      - action: light.turn_on
+        target:
+          entity_id: light.office_platform_light
+        data:
+          brightness_pct: 40
+
+  office_lights_off:
+    alias: Office lights off
+    mode: restart
+    sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.office_pinboard_light
+      - action: light.turn_off
+        target:
+          entity_id: light.office_platform_light

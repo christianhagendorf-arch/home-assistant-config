@@ -113,3 +113,10 @@ Safety boundaries remain unchanged:
 - every command-topic candidate remains owned by production until a separate writable migration patch is accepted
 
 The production `tasmotas/cmnd/status` and `tasmotas/cmnd/POWER` start-up requests are relevant evidence for device discovery and state refresh, but they are not executed by Patch 0030. Their behavior, retained-message implications, and automation ownership must be reviewed before reuse.
+## Office mapping validated in Patch 0033
+- `sonoff-4`: office pinboard light; state `sonoff-4/stat/POWER`; command `sonoff-4/cmnd/POWER`.
+- `led-ww-1`: dimmable office platform light; power and dimmer commands use `%topic%/%prefix%/`; office group brightness is 40%.
+- `temp_arbeitszimmer`: office sensor at the pinboard; authoritative room temperature and humidity source.
+- `thermostat_arbeitszimmer`: office radiator thermostat; telemetry is read-only in `ha-test`.
+- `sonoff_minizb_3_arbeitszimmer`: physical office wall switch input for the production-owned office/bedroom multi-toggle automation.
+- `light.bedroom_rgbw_light`: local Magic Home entity at `192.168.178.234`; not MQTT-managed.

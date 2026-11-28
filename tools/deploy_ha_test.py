@@ -22,6 +22,7 @@ PAYLOAD = (
     Path('dashboards/living-room-pilot.yaml'),
     Path('packages/l0/pilot_living_room.yaml'),
     Path('packages/l1/pilot_l1.yaml'),
+    Path('packages/l1/office.yaml'),
     Path('packages/l2/pilot_l2.yaml'),
     Path('packages/garden/pilot_garden.yaml'),
     Path('packages/mqtt/pilot_mqtt_readonly.yaml'),

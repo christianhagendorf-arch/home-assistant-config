@@ -54,11 +54,11 @@ Tasmota devices: **31**
 - FullTopic: `%topic%/%prefix%/`
 - Observed responses: `stat/POWER; stat/RESULT; stat/STATUS; tele/LWT; tele/STATE`
 - Command topics (documented, not used): `led-ww-1/cmnd/POWER`
-- Room: unknown
-- Function: unknown
+- Room: office
+- Function: platform light
 - Migration owner: production
 - ha-test status: inventory only
-- Review notes:
+- Review notes: Office platform light; dimmable; office group uses 40% brightness.
 
 ## led-ww-2
 
@@ -404,11 +404,11 @@ Tasmota devices: **31**
 - FullTopic: `%topic%/%prefix%/`
 - Observed responses: `stat/POWER; stat/RESULT; stat/STATUS; tele/LWT; tele/SENSOR; tele/STATE`
 - Command topics (documented, not used): `sonoff-4/cmnd/POWER`
-- Room: unknown
-- Function: unknown
+- Room: office
+- Function: pinboard light
 - Migration owner: production
 - ha-test status: inventory only
-- Review notes:
+- Review notes: Office pinboard light. Runtime topic is lowercase `sonoff-4`; state `sonoff-4/stat/POWER`; command `sonoff-4/cmnd/POWER`.
 
 ## Sonoff-8
 

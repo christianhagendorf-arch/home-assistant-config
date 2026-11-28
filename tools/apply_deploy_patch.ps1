@@ -44,6 +44,7 @@ param(
 $PackageFiles = @(
     'config/packages/l0/pilot_living_room.yaml',
     'config/packages/l1/pilot_l1.yaml',
+    'config/packages/l1/office.yaml',
     'config/packages/l2/pilot_l2.yaml',
     'config/packages/garden/pilot_garden.yaml',
     'config/packages/mqtt/pilot_mqtt_readonly.yaml'

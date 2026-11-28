@@ -81,3 +81,8 @@ Patch 0027 validates the broker, bridge, and two nearby temperature sensors with
 - Establish English code naming and room-by-room migration without separate room documents.
 - Preserve existing entity IDs to avoid unrelated breaking changes.
 - Continue with the office room migration in Patch 0033 after the remaining room inventory and automation review is complete.
+## Patch 0033 office real-state migration
+- Replace office light, temperature, humidity, heating-status, and shutter simulations in the HMI with real entities.
+- Keep the production Home Assistant fully operational in parallel; the physical multi-toggle automation remains production-owned until a separate cutover.
+- Keep office heating and shutter control read-only.
+- Use the locally configured Magic Home entity for the bedroom light dependency.

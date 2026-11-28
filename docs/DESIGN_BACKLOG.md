@@ -133,3 +133,9 @@ Short working list for accepted design debt and later validation.
 - Treat `switch.sonoff_4` as office pinboard light, `light.led_ww_1` as dimmable office platform light, and `light.led_rgbw_4` as bedroom light.
 - Keep office heating and shutter control read-only in the initial room migration.
 - Retain Overkiz cloud integration for the Connectivity Kit / TaHoma mini until official local API support for the exact gateway is confirmed.
+## Office follow-up after Patch 0033
+- Plan the physical wall-switch automation cutover separately; production and `ha-test` continue in parallel until the final system cutover.
+- During the later automation cutover use 600 ms OFF debounce, 700 ms sequence gap, maximum count 3, 40% office platform brightness, and last-state restore for the bedroom light.
+- Evaluate the final Raspberry Pi role, host rename, and replacement of the current production Pi with 32-bit OS before system cutover.
+- Recheck whether the Magic Home RGBW controllers in the bedroom, Lotta, and Lene rooms can safely run current open firmware; keep Magic Home until exact hardware support is proven.
+- Evaluate official local Overkiz API support for the Connectivity Kit / TaHoma mini; retain the cloud integration until then.
