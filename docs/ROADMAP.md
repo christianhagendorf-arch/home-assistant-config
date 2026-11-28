@@ -80,4 +80,4 @@ Patch 0027 validates the broker, bridge, and two nearby temperature sensors with
 - Replace technical dashboard paths with `l0`, `l1`, and `l2` while keeping the visible titles `EG`, `OG`, and `DG`.
 - Establish English code naming and room-by-room migration without separate room documents.
 - Preserve existing entity IDs to avoid unrelated breaking changes.
-- Continue Patch 0032 with the office room migration only after the remaining room inventory and automation review is complete.
+- Continue with the office room migration in Patch 0033 after the remaining room inventory and automation review is complete.
