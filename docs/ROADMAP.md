@@ -61,3 +61,10 @@ Patch 0027 validates the broker, bridge, and two nearby temperature sensors with
 - Generate a redacted physical/logical device inventory in Markdown and CSV.
 - Review command-topic presence and assign migration ownership before selecting a writable pilot.
 - Do not add runtime entities, Discovery, broker changes, or device commands in this patch.
+
+## Patch 0030 Tasmota inventory expansion
+- Inventory non-Zigbee MQTT devices, especially Tasmota devices, without publishing commands from `ha-test`.
+- Correlate reviewed Tasmota status/telemetry captures with Home Assistant MQTT metadata.
+- Record state, telemetry, availability, and command-topic candidates in `docs/MQTT_TASMOTA_INVENTORY.md`.
+- Keep production ownership for all writable topics until a separately reviewed migration patch selects one harmless pilot and documents rollback.
+- Include the Patch 0030 inventory document and both export tools in future source exports.

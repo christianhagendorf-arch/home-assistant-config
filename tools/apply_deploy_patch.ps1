@@ -29,7 +29,10 @@ param(
         'tools/configure_ha_test_firewall.sh',
         'tools/ha-test-mqtt-firewall.service',
         'tools/export_mqtt_inventory.py',
-        'docs/MQTT_DEVICE_INVENTORY.md'
+        'docs/MQTT_DEVICE_INVENTORY.md',
+        'docs/MQTT_TASMOTA_INVENTORY.md',
+        'tools/export_ha_mqtt_metadata.py',
+        'tools/export_tasmota_inventory.py'
     ),
 
     [string]$Repository = 'D:\GitHub\home-assistant-config',

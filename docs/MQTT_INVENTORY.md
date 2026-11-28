@@ -101,3 +101,15 @@ For each item record: physical device, IEEE/MAC identifier, friendly name, state
 ## Patch 0029 inventory workflow
 
 Use `tools/export_mqtt_inventory.py` with two read-only captures: `zigbee2mqtt/bridge/devices` and retained `homeassistant/#` discovery configurations. The generator does not connect to MQTT or publish messages. Generated Markdown and CSV must be reviewed before either is committed. Raw capture files remain outside Git under `patches/` and must not contain broker credentials or Zigbee network keys.
+
+## Patch 0030 Tasmota inventory workflow
+Patch 0030 extends the read-only inventory to MQTT devices that are not managed by Zigbee2MQTT, especially Tasmota devices. `tools/export_ha_mqtt_metadata.py` extracts MQTT-related metadata from a local Home Assistant export, and `tools/export_tasmota_inventory.py` converts reviewed Tasmota status and telemetry captures into `docs/MQTT_TASMOTA_INVENTORY.md`.
+
+Safety boundaries remain unchanged:
+- inventory tooling does not connect to the broker or publish MQTT messages
+- `ha-test` MQTT Discovery remains disabled
+- no `cmnd/` topic is published during inventory generation
+- raw captures and Home Assistant metadata exports remain outside Git
+- every command-topic candidate remains owned by production until a separate writable migration patch is accepted
+
+The production `tasmotas/cmnd/status` and `tasmotas/cmnd/POWER` start-up requests are relevant evidence for device discovery and state refresh, but they are not executed by Patch 0030. Their behavior, retained-message implications, and automation ownership must be reviewed before reuse.

@@ -112,3 +112,10 @@ Short working list for accepted design debt and later validation.
 - Resolve duplicate discovery records into physical-device ownership.
 - Identify one harmless first writable pilot only after command topics, production automations, retained behavior, and rollback are documented.
 - Keep raw capture files and generated CSV outside Git unless separately reviewed for sensitive content.
+
+## Patch 0030 Tasmota inventory
+- Review `docs/MQTT_TASMOTA_INVENTORY.md` together with the Zigbee2MQTT device inventory before selecting any writable pilot.
+- Treat Tasmota `cmnd/` topics as writable control paths; do not publish from `ha-test` during inventory work.
+- Resolve duplicate or stale Home Assistant discovery metadata before assigning migration ownership.
+- Keep broker captures and Home Assistant metadata exports outside Git unless they have been explicitly reviewed and redacted.
+- Preserve the production start-up status request as documentation only until the writable migration design defines ownership, retained-message behavior, and rollback.
