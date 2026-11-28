@@ -119,3 +119,9 @@ Short working list for accepted design debt and later validation.
 - Resolve duplicate or stale Home Assistant discovery metadata before assigning migration ownership.
 - Keep broker captures and Home Assistant metadata exports outside Git unless they have been explicitly reviewed and redacted.
 - Preserve the production start-up status request as documentation only until the writable migration design defines ownership, retained-message behavior, and rollback.
+
+## Patch 0031 first writable pilot decision
+- Confirm the physical function behind the shortlisted Tasmota device before selecting it.
+- Inventory all production automations, scripts, scenes, and start-up publications that can command the candidate.
+- Define one authoritative controller during the pilot and a rollback that does not replay a retained command.
+- Exclude heating, covers, security, networking, refrigeration, aquarium life support, and unattended appliances from the first writable pilot.

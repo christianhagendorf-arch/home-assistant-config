@@ -68,3 +68,9 @@ Patch 0027 validates the broker, bridge, and two nearby temperature sensors with
 - Record state, telemetry, availability, and command-topic candidates in `docs/MQTT_TASMOTA_INVENTORY.md`.
 - Keep production ownership for all writable topics until a separately reviewed migration patch selects one harmless pilot and documents rollback.
 - Include the Patch 0030 inventory document and both export tools in future source exports.
+
+## Patch 0031 documentation and writable-pilot readiness
+- Add `docs/README.md` as the documentation entry point and archive completed one-time merge documents.
+- Add `docs/MQTT_MIGRATION_PLAN.md` with entry gates, candidate classes, exclusions, and evidence required for the first writable pilot.
+- Do not publish MQTT commands or change runtime configuration in Patch 0031.
+- Implement one writable pilot in the next patch only after physical mapping, production ownership, retained behavior, and rollback are complete.
